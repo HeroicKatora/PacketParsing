@@ -1,0 +1,164 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<!DOCTYPE project>
+<gpp:pacparse xmlns="http://github.com/HeroicKatora/PacketParsing" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
+	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
+	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema.xsd
+						http://github.com/HeroicKatora/PacketParsing/Standard StandardTypes.xsd">
+	
+	<type name="IP_Version">
+		<iohandle>
+			<std:integral>
+				<std:subtype value="4bit"/>
+			</std:integral>
+		</iohandle>
+		<displayhandle>
+			<std:enumeration>
+				<std:enum_fallback>
+					<std:display_integral>
+						<std:outformat formatstring="%h"/>
+					</std:display_integral>
+				</std:enum_fallback>
+				<std:enumvalue mnemonic="IP_v4">
+					<std:parsed parser="integral" value="0x04"/>
+				</std:enumvalue>
+				<std:enumvalue mnemonic="IP_v6">
+					<std:parsed parser="integral" value="0x06" />
+				</std:enumvalue>
+				<std:enumvalue mnemonic="IP_vMaU">
+					<builtin implementor="IP_Version"/> <!-- Cross reference -->
+				</std:enumvalue>
+			</std:enumeration>
+		</displayhandle>
+	</type>
+
+	<type name="IP_HL">
+		<typehandle>
+			<std:integral>
+				<std:subtype value="4bit" />
+				<std:outformat formatstring="%x" />
+			</std:integral>
+		</typehandle>
+	</type>
+
+	<type name="IP_TOS">
+		<iohandle>
+			<std:integral>
+				<std:subtype value="byte"/>
+			</std:integral>
+		</iohandle>
+		<displayhandle>
+			<builtin implementor="IP_TOS"/>
+		</displayhandle>
+	</type>
+	
+	<type name="IP_Length">
+		<typehandle>
+			<std:integral>
+				<std:subtype value="uint16" />
+				<std:outformat formatstring="%i header quad bytes" />
+			</std:integral>
+		</typehandle>
+	</type>
+	
+	<type name="IP_ID">
+		<typehandle>
+			<std:integral>
+				<std:subtype value="uint16" />
+				<std:outformat formatstring="%x" />
+			</std:integral>
+		</typehandle>
+	</type>
+	
+	<type name="IP_Flags">
+		<iohandle>
+			<std:integral>
+				<std:subtype value="3bit"/>
+			</std:integral>
+		</iohandle>
+		<displayhandle>
+			<builtin implementor="IP_ID"></builtin>
+		</displayhandle>
+	</type>
+	
+	<type name="IP_Frag">
+		<typehandle>
+			<std:integral>
+				<std:subtype value="13bit"/>
+				<std:outformat formatstring="%x" />
+			</std:integral>
+		</typehandle>
+	</type>
+	
+	<type name="IP_TTL">
+		<typehandle>
+			<std:integral>
+				<std:subtype value="byte" />
+				<std:outformat formatstring="%i" />
+			</std:integral>
+		</typehandle>
+	</type>
+	
+	<type name="IP_Protocol">
+		<iohandle>
+			<std:integral>
+				<std:subtype value="byte" />
+			</std:integral>
+		</iohandle>
+		<displayhandle>
+			<std:enumeration>
+				<std:enum_fallback>
+					<std:display_integral>
+						<std:outformat formatstring="%x"/>
+					</std:display_integral>
+				</std:enum_fallback>
+				<!-- Implement the protocol values -->
+			</std:enumeration>
+		</displayhandle>
+	</type>
+	
+	<type name="IP_Checksum">
+		<iohandle>
+			<std:integral>
+				<std:subtype value="uint16"/>
+			</std:integral>
+		</iohandle>
+		<displayhandle>
+			<builtin implementor="IP_Checksum" ></builtin>
+		</displayhandle>
+	</type>
+	<type name="IP_Address">
+		<typehandle>
+			<std:integral>
+				<std:subtype value="uint32" />
+			</std:integral>
+		</typehandle>
+	</type>
+
+	<packet name="IPv4">
+		<field name="version" type="IP_Version">
+			<value>IP_v4</value>
+		</field>
+		<field name="ip_header_length" displayname="IP Header Length"
+			type="IP_HL"></field>
+		<field name="type_of_service" displayname="Type of Service"
+			type="IP_TOS"></field>
+		<field name="total_length" displayname="Total Length" type="IP_Length"></field>
+		<field name="id" displayname="Identification" type="IP_ID"></field>
+		<field name="flags" displayname="Flags" type="IP_Flags"></field>
+		<field name="fragment_offset" displayname="Fragment Offset"
+			type="IP_Frag"></field>
+		<field name="ttl" displayname="Time to Live" type="IP_TTL"></field>
+		<field name="protocol" displayname="Protocol" type="IP_Protocol"></field>
+		<field name="checksum" displayname="Header Checksum" type="IP_Checksum"></field>
+		<field name="source" displayname="Source address" type="IP_Address"></field>
+		<field name="destination" displayname="Destination address"
+			type="IP_Address"></field>
+		<dynamic name="options" displayname="Options and Padding"
+			type="IP_Options">
+			<builtin />
+		</dynamic>
+	</packet>
+</gpp:pacparse>
+

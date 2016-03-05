@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://github.com/HeroicKatora/PacketParsing/Standard" 
+	targetNamespace="http://github.com/HeroicKatora/PacketParsing/Standard"
+	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
+	xmlns:gppstd="http://github.com/HeroicKatora/PacketParsing/Standard"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	elementFormDefault="qualified"
+	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema.xsd">
+
+	<xs:import namespace="http://github.com/HeroicKatora/PacketParsing" schemaLocation="PacketSchema.xsd"></xs:import>
+
+	<xs:element name="outformat">
+		<xs:complexType>
+			<xs:attribute name="formatstring" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="enum_fallback" type="gpp:display_handle_descriptor"/>
+	
+	<xs:element name="enumeration" substitutionGroup="gpp:display_basehandler">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="gpp:handle">
+					<xs:sequence>
+						<xs:element ref="enum_fallback" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="enumvalue" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:choice>
+									<xs:element ref="gpp:builtin"/>
+									<xs:element name="parsed">
+										<xs:complexType>
+											<xs:attribute name="parser" type="xs:string"/>
+											<xs:attribute name="value" type="xs:string"/>
+										</xs:complexType>
+									</xs:element>
+								</xs:choice>
+								<xs:attribute name="mnemonic" type="xs:string"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="handler" fixed="enum" type="xs:string"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="integral_subtype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([0-9])*bit|char|byte|short|int|long|uint8|uint16|uint32"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:element name="display_integral" substitutionGroup="gpp:display_basehandler">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="gpp:handle">
+					<xs:sequence>
+						<xs:element ref="outformat" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attribute name="instantiator" fixed="integral.display" type="gpp:python_path"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="integral" substitutionGroup="gpp:type_basehandler">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="gpp:handle">
+					<xs:all>
+						<xs:element name="subtype" form="qualified">
+							<xs:complexType>
+								<xs:attribute name="value" type="integral_subtype" default="int"/>
+							</xs:complexType>
+						</xs:element>
+						<xs:element ref="outformat" minOccurs="0"/>
+					</xs:all>
+					<xs:attribute name="instantiator" fixed="integral.type" type="gpp:python_path"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="instance_handle" substitutionGroup="gpp:type_basehandler">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="gpp:handle">
+					<xs:attribute name="instancename" type="xs:string"></xs:attribute>
+					<xs:attribute name="instantiator" fixed="instance_handler.type" type="gpp:python_path"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element> 
+
+</xs:schema>

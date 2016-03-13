@@ -1,16 +1,31 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<xs:schema xmlns="http://github.com/HeroicKatora/PacketParsing" targetNamespace="http://github.com/HeroicKatora/PacketParsing" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+<xs:schema xmlns="http://github.com/HeroicKatora/PacketParsing" 
+	targetNamespace="http://github.com/HeroicKatora/PacketParsing" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 		
 	<xs:simpleType name="python_identifier">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="([a..zA..Z]|_)([a..zA..Z0..9]|_)*"></xs:pattern>
+			<xs:pattern value="([a-zA-Z_])([a-zA-Z0-9_])*"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="python_path">
+	<xs:simpleType name="packet_parsing_identifier">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="([a-zA-Z]|_)([a-zA-Z0-9]|_)*(\.([a-zA-Z]|_)([a-zA-Z0-9]|_)*)*"></xs:pattern>
+			<xs:pattern value="[a-zA-Z0-9_ ]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="python_module_path">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([a-zA-Z_])([a-zA-Z0-9_])*(\.([a-zA-Z_])([a-zA-Z0-9_])*)*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="file_name">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[^/]+"></xs:pattern>
 		</xs:restriction>
 	</xs:simpleType>
 		
@@ -18,17 +33,24 @@
 		<xs:complexType>
 	    	<xs:annotation><xs:documentation>Marks something as builtin and not specified in the XML document. This can be used to implement custom behaviour.</xs:documentation></xs:annotation>
 	    	<xs:sequence><!-- Does not have any contents --></xs:sequence>
-	    	<xs:attribute name="implementor" type="python_path" use="required">
+	    	<xs:attribute name="implementor" type="packet_parsing_identifier" use="required">
 	    		<xs:annotation><xs:documentation>The type which implements this, it must be imported in the import segment.</xs:documentation></xs:annotation>
 	    	</xs:attribute>
 	    </xs:complexType>
     </xs:element>
+    
+    <xs:attributeGroup name="direct_builtin">
+   		<xs:annotation><xs:documentation>Import a builtin directly without naming it first</xs:documentation></xs:annotation>
+   		<xs:attribute name="module" type="python_module_path"/>
+   		<xs:attribute name="implementor" type="python_identifier"/>
+   	</xs:attributeGroup>
 	
 	<xs:element name="pacparse">
 	    <xs:complexType>
 	    	<xs:sequence>
 	    		<xs:element ref="import" minOccurs="0" maxOccurs="unbounded"/>
-	    		<xs:choice minOccurs="0" maxOccurs="unbounded">
+	    		<xs:element ref="include" minOccurs="0" maxOccurs="unbounded"/>
+	  	 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 	    			<xs:element ref="io_operator"/>
 					<xs:element ref="display"/>
 	    			<xs:element ref="parser"/>
@@ -41,65 +63,126 @@
 	    	</xs:sequence>
 	    </xs:complexType>
 	    <xs:key name="key_python_name">
-			<xs:selector xpath="instantiator_import"/>
-			<xs:field xpath="@referenceName"></xs:field>
-		</xs:key>
-		<xs:key name="key_type_name">
-			<xs:selector xpath="type"></xs:selector>
-			<xs:field xpath="@name"></xs:field>
-		</xs:key>
-	    <xs:key name="key_packet_name">
-			<xs:selector xpath="packet"/>
+			<xs:selector xpath="./gpp:import/gpp:instantiator_import"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
+		<xs:key name="key_type_name">
+			<xs:selector xpath="gpp:type|gpp:include/gpp:type_include"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+	    <xs:key name="key_packet_name">
+			<xs:selector xpath="gpp:packet"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		
 		<xs:keyref name="ref_python_name" refer="key_python_name">
-	    	<xs:selector xpath=".//builtin"></xs:selector>
-	    	<xs:field xpath="@implementor"></xs:field>
+	    	<xs:selector xpath=".//gpp:builtin"/>
+	    	<xs:field xpath="@implementor"/>
 	    </xs:keyref>
-	</xs:element>
-	
-	<xs:element name="import">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="instantiator_import" minOccurs="1" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attribute name="module" type="python_path"></xs:attribute>
-		</xs:complexType>
+	    <xs:keyref name="ref_type_name" refer="key_type_name">
+	    	<xs:selector xpath=".//gpp:type_ref"/>
+	    	<xs:field xpath="@ref_name"/>
+	    </xs:keyref>
+	    
 	</xs:element>
 	
 	<xs:element name="instantiator_import">
 		<xs:complexType>
-			<xs:attribute name="name" type="python_identifier" use="required"/>
-			<xs:attribute name="referenceName" type="python_path" use="required"/>
+			<xs:annotation><xs:documentation>Imports a python object which instantiates a type</xs:documentation></xs:annotation>
+			<xs:attribute name="instance_name" type="python_identifier" use="required">
+				<xs:annotation><xs:documentation>The name of the python object</xs:documentation></xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="name" type="packet_parsing_identifier" use="required">
+				<xs:annotation><xs:documentation>The alias in this document</xs:documentation></xs:annotation>
+			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 	
-    <xs:complexType name="handle">
-    	<xs:sequence>
-    		<xs:any minOccurs="0" maxOccurs="unbounded"></xs:any>
-    	</xs:sequence>
-		<xs:attribute name="instantiator" type="python_path"></xs:attribute>
-		<xs:attribute name="method" type="python_identifier"></xs:attribute>
+	<xs:element name="import">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>Specifies a python module to import from</xs:documentation></xs:annotation>
+			<xs:sequence>
+				<xs:element ref="instantiator_import" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="module" type="python_module_path"></xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="def_include">
+		<xs:annotation><xs:documentation>Specifies a packet object to include from another document</xs:documentation></xs:annotation>
+		<xs:attribute name="instance_name" type="packet_parsing_identifier" use="required">
+			<xs:annotation><xs:documentation>The name of the object in the other document</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="name" type="packet_parsing_identifier" use="required">
+			<xs:annotation><xs:documentation>The alias of the object in this document</xs:documentation></xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:element name="type_include" type="def_include"/>
+	<xs:element name="io_include" type="def_include"/>
+	<xs:element name="writer_include" type="def_include"/>
+	<xs:element name="reader_include" type="def_include"/>
+	<xs:element name="display_include" type="def_include"/>
+	<xs:element name="parser_include" type="def_include"/>
+	<xs:element name="printer_include" type="def_include"/>
+	
+	<xs:element name="include">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>Specifies a file from which to include other packet objects</xs:documentation></xs:annotation>
+			<xs:sequence>
+				<xs:choice minOccurs="1" maxOccurs="unbounded">
+					<xs:element ref="type_include"/>
+					<xs:element ref="io_include"/>
+					<xs:element ref="writer_include"/>
+					<xs:element ref="reader_include"/>
+					<xs:element ref="display_include"/>
+					<xs:element ref="parser_include"/>
+					<xs:element ref="printer_include"/>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="source_document" type="file_name" use="required">
+				<xs:annotation><xs:documentation>File name of another source document</xs:documentation></xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="document_source" type="xs:anyURI">
+				<xs:annotation><xs:documentation>Descriptor for the source of the other document</xs:documentation></xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="packet_object_ref">
+		<xs:annotation><xs:documentation>References another packet object. Don't make cylic references, they should be detected at runtime</xs:documentation></xs:annotation>
+		<xs:attribute name="ref_name" type="packet_parsing_identifier" use="required"/>
+	</xs:complexType>
+	
+	<xs:element name="type_ref" type="packet_object_ref"/>
+	<xs:element name="io_ref" type="packet_object_ref"/>
+	<xs:element name="reader_ref" type="packet_object_ref"/>
+	<xs:element name="writer_ref" type="packet_object_ref"/>
+	<xs:element name="display_ref" type="packet_object_ref"/>
+	<xs:element name="printer_ref" type="packet_object_ref"/>
+	<xs:element name="parser_ref" type="packet_object_ref"/>
+	
+	<xs:complexType name="handle">
+		<xs:annotation><xs:documentation>An xml element that specifies a handler to be constructed</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:any minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+    	<xs:attributeGroup ref="direct_builtin"></xs:attributeGroup>
 		<xs:anyAttribute></xs:anyAttribute>
     </xs:complexType>
     
-	<xs:element name="type_basehandler" type="handle" abstract="true">
-		<xs:keyref name="base_inst_name" refer="key_python_name">
-			<xs:selector xpath="."/>
-			<xs:field xpath="@instantiator"/>
-		</xs:keyref>
-	</xs:element>
-	
+	<xs:element name="type_basehandler" type="handle" abstract="true"/>
 	<xs:element name="io_basehandler" type="handle" abstract="true"/>
 	<xs:element name="reader_basehandler" type="handle" abstract="true"/>
 	<xs:element name="writer_basehandler" type="handle" abstract="true"/>
 	<xs:element name="display_basehandler" type="handle" abstract="true"/>
 	<xs:element name="printer_basehandler" type="handle" abstract="true"/>
 	<xs:element name="parser_basehandler" type="handle" abstract="true"/>
-    
+	
     <xs:complexType name="type_handle_descriptor">
    		<xs:choice>
    			<xs:element ref="builtin"/>
+   			<xs:element ref="type_ref"/>
    			<xs:element ref="type_basehandler"/>
    		</xs:choice>
     </xs:complexType>
@@ -107,7 +190,9 @@
     <xs:complexType name="io_handle_descriptor">
    		<xs:choice>
    			<xs:element ref="builtin"/>
+   			<xs:element ref="type_ref"/>
    			<xs:element ref="type_basehandler"/>
+   			<xs:element ref="io_ref"/>
    			<xs:element ref="io_basehandler"/>
    		</xs:choice>
     </xs:complexType>
@@ -115,8 +200,11 @@
     <xs:complexType name="reader_handle_descriptor">
    		<xs:choice>
    			<xs:element ref="builtin"/>
+   			<xs:element ref="type_ref"/>
    			<xs:element ref="type_basehandler"/>
+   			<xs:element ref="io_ref"/>
    			<xs:element ref="io_basehandler"/>
+   			<xs:element ref="reader_ref"/>
    			<xs:element ref="reader_basehandler"/>
    		</xs:choice>
     </xs:complexType>
@@ -124,8 +212,11 @@
     <xs:complexType name="writer_handle_descriptor">
    		<xs:choice>
    			<xs:element ref="builtin"/>
+   			<xs:element ref="type_ref"/>
    			<xs:element ref="type_basehandler"/>
+   			<xs:element ref="io_ref"/>
    			<xs:element ref="io_basehandler"/>
+   			<xs:element ref="writer_ref"/>
    			<xs:element ref="writer_basehandler"/>
    		</xs:choice>
     </xs:complexType>
@@ -133,7 +224,9 @@
 	<xs:complexType name="display_handle_descriptor">
    		<xs:choice>
    			<xs:element ref="builtin"/>
+   			<xs:element ref="type_ref"/>
    			<xs:element ref="type_basehandler"/>
+   			<xs:element ref="display_ref"/>
    			<xs:element ref="display_basehandler"/>
    		</xs:choice>
     </xs:complexType>
@@ -141,8 +234,11 @@
     <xs:complexType name="printer_handle_descriptor">
    		<xs:choice>
    			<xs:element ref="builtin"/>
+   			<xs:element ref="type_ref"/>
    			<xs:element ref="type_basehandler"/>
+   			<xs:element ref="display_ref"/>
    			<xs:element ref="display_basehandler"/>
+   			<xs:element ref="printer_ref"/>
    			<xs:element ref="printer_basehandler"/>
    		</xs:choice>
     </xs:complexType>
@@ -150,13 +246,15 @@
     <xs:complexType name="parser_handle_descriptor">
    		<xs:choice>
    			<xs:element ref="builtin"/>
+   			<xs:element ref="type_ref"/>
    			<xs:element ref="type_basehandler"/>
+   			<xs:element ref="io_ref"/>
    			<xs:element ref="io_basehandler"/>
+   			<xs:element ref="parser_ref"/>
    			<xs:element ref="parser_basehandler"/>
    		</xs:choice>
     </xs:complexType>
     
-
 	<xs:element name="type">
 		<xs:complexType>
 	   		<xs:annotation><xs:documentation>A type describes input/output and prints/parses data</xs:documentation></xs:annotation>
@@ -168,7 +266,7 @@
 	   				<xs:group ref="displaygroup"/>
 	   			</xs:sequence>
 	   		</xs:choice>
-	   		<xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
 	    </xs:complexType>
 	</xs:element>
 	
@@ -187,7 +285,7 @@
 	    			</xs:complexType>
 	    		</xs:element>
 	    	</xs:sequence>
-	    	<xs:attribute name="name" type="xs:string"/>
+	    	<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
 	    </xs:complexType>
 	</xs:element>
 	

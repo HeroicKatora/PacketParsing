@@ -4,8 +4,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
 	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
-	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema.xsd
-						http://github.com/HeroicKatora/PacketParsing/Standard StandardTypes.xsd">
+	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing ../schemes/PacketSchema.xsd
+						http://github.com/HeroicKatora/PacketParsing/Standard ../schemes/StandardTypes.xsd">
+	
+	<gpp:import module="gpp.standard">
+		<gpp:instantiator_import instance_name="ipVersion" name="IP_Version_Fictional"/>
+		<gpp:instantiator_import instance_name="ipTOS" name="IP_TOS"/>
+		<gpp:instantiator_import instance_name="ipID" name="IP_ID"/>
+		<gpp:instantiator_import instance_name="ipChecksum" name="IP_Checksum"/>
+	</gpp:import>
+	
+	<gpp:include source_document="a">
+		<gpp:type_include instance_name="Import" name="Include"/>
+	</gpp:include>
 	
 	<type name="IP_Version">
 		<iohandle>
@@ -27,7 +38,7 @@
 					<std:parsed parser="integral" value="0x06" />
 				</std:enumvalue>
 				<std:enumvalue mnemonic="IP_vMaU">
-					<builtin implementor="IP_Version"/> <!-- Cross reference -->
+					<builtin implementor="IP_Version_Fictional"/>
 				</std:enumvalue>
 			</std:enumeration>
 		</displayhandle>
@@ -125,7 +136,7 @@
 			</std:integral>
 		</iohandle>
 		<displayhandle>
-			<builtin implementor="IP_Checksum" ></builtin>
+			<builtin implementor="IP_Checksum"></builtin>
 		</displayhandle>
 	</type>
 	<type name="IP_Address">
@@ -133,6 +144,12 @@
 			<std:integral>
 				<std:subtype value="uint32" />
 			</std:integral>
+		</typehandle>
+	</type>
+
+	<type name="Test">
+		<typehandle>
+			<type_ref ref_name="Include"/>
 		</typehandle>
 	</type>
 
@@ -155,10 +172,10 @@
 		<field name="source" displayname="Source address" type="IP_Address"></field>
 		<field name="destination" displayname="Destination address"
 			type="IP_Address"></field>
-		<dynamic name="options" displayname="Options and Padding"
+		<!-- <dynamic name="options" displayname="Options and Padding"
 			type="IP_Options">
 			<builtin />
-		</dynamic>
+		</dynamic> -->
 	</packet>
 </gpp:pacparse>
 

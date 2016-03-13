@@ -27,7 +27,8 @@
 						<xs:element name="enumvalue" minOccurs="0" maxOccurs="unbounded">
 							<xs:complexType>
 								<xs:choice>
-									<xs:element ref="gpp:builtin"/>
+									<xs:element ref="gpp:builtin">
+									</xs:element>
 									<xs:element name="parsed">
 										<xs:complexType>
 											<xs:attribute name="parser" type="xs:string"/>
@@ -39,7 +40,8 @@
 							</xs:complexType>
 						</xs:element>
 					</xs:sequence>
-					<xs:attribute name="handler" fixed="enum" type="xs:string"/>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="gpp.builtin"/>
+   					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="enumeration"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
@@ -58,7 +60,8 @@
 					<xs:sequence>
 						<xs:element ref="outformat" minOccurs="0"/>
 					</xs:sequence>
-					<xs:attribute name="instantiator" fixed="integral.display" type="gpp:python_path"/>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="gpp.builtin"/>
+   					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="display_integral"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
@@ -68,15 +71,16 @@
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:handle">
-					<xs:all>
+					<xs:sequence>
 						<xs:element name="subtype" form="qualified">
 							<xs:complexType>
 								<xs:attribute name="value" type="integral_subtype" default="int"/>
 							</xs:complexType>
 						</xs:element>
 						<xs:element ref="outformat" minOccurs="0"/>
-					</xs:all>
-					<xs:attribute name="instantiator" fixed="integral.type" type="gpp:python_path"/>
+					</xs:sequence>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="gpp.builtin"/>
+   					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="integral"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
@@ -86,8 +90,10 @@
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:handle">
-					<xs:attribute name="instancename" type="xs:string"></xs:attribute>
-					<xs:attribute name="instantiator" fixed="instance_handler.type" type="gpp:python_path"/>
+					<xs:sequence>
+					</xs:sequence>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="gpp.builtin"/>
+   					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="instance_handler"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>

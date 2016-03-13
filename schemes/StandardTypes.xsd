@@ -2,14 +2,14 @@
 <xs:schema xmlns="http://github.com/HeroicKatora/PacketParsing/Standard" 
 	targetNamespace="http://github.com/HeroicKatora/PacketParsing/Standard"
 	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
-	xmlns:gppstd="http://github.com/HeroicKatora/PacketParsing/Standard"
+	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	elementFormDefault="qualified"
-	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema.xsd">
+	elementFormDefault="qualified">
 
-	<xs:import namespace="http://github.com/HeroicKatora/PacketParsing" schemaLocation="PacketSchema.xsd"></xs:import>
-
+	<xs:import namespace="http://github.com/HeroicKatora/PacketParsing"
+				schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema"></xs:import>
+	
 	<xs:element name="outformat">
 		<xs:complexType>
 			<xs:attribute name="formatstring" type="xs:string"/>

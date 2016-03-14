@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 <xs:schema xmlns="http://github.com/HeroicKatora/PacketParsing/Standard" 
 	targetNamespace="http://github.com/HeroicKatora/PacketParsing/Standard"
 	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
@@ -16,6 +16,12 @@
 		</xs:complexType>
 	</xs:element>
 	
+	<xs:simpleType name="integer_oformat">
+		<xs:restriction base="xs:string">
+			<xs:pattern value=".*\{:(i|x|X|b)\}.*"></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	
 	<xs:element name="enum_fallback" type="gpp:display_handle_descriptor"/>
 	
 	<xs:element name="enumeration" substitutionGroup="gpp:display_basehandler">
@@ -27,11 +33,20 @@
 						<xs:element name="enumvalue" minOccurs="0" maxOccurs="unbounded">
 							<xs:complexType>
 								<xs:choice>
-									<xs:element ref="gpp:builtin">
-									</xs:element>
+									<xs:element ref="gpp:builtin"/>
 									<xs:element name="parsed">
 										<xs:complexType>
-											<xs:attribute name="parser" type="xs:string"/>
+											<xs:sequence>
+												<xs:element name="parser">
+													<xs:complexType>
+														<xs:choice>
+															<xs:element ref="gpp:type_ref"/>
+															<xs:element ref="gpp:display_ref"/>
+															<xs:element ref="gpp:parser_ref"/>
+														</xs:choice>
+													</xs:complexType>
+												</xs:element>	
+											</xs:sequence>
 											<xs:attribute name="value" type="xs:string"/>
 										</xs:complexType>
 									</xs:element>
@@ -40,7 +55,7 @@
 							</xs:complexType>
 						</xs:element>
 					</xs:sequence>
-					<xs:attribute name="module" type="gpp:python_module_path" fixed="gpp.builtin"/>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
    					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="enumeration"/>
 				</xs:restriction>
 			</xs:complexContent>
@@ -60,7 +75,7 @@
 					<xs:sequence>
 						<xs:element ref="outformat" minOccurs="0"/>
 					</xs:sequence>
-					<xs:attribute name="module" type="gpp:python_module_path" fixed="gpp.builtin"/>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
    					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="display_integral"/>
 				</xs:restriction>
 			</xs:complexContent>
@@ -71,16 +86,10 @@
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:handle">
-					<xs:sequence>
-						<xs:element name="subtype" form="qualified">
-							<xs:complexType>
-								<xs:attribute name="value" type="integral_subtype" default="int"/>
-							</xs:complexType>
-						</xs:element>
-						<xs:element ref="outformat" minOccurs="0"/>
-					</xs:sequence>
-					<xs:attribute name="module" type="gpp:python_module_path" fixed="gpp.builtin"/>
+					<xs:attribute name="formatstring" type="integer_oformat" use="optional"/>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
    					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="integral"/>
+   					<xs:attribute name="subtype" type="integral_subtype" default="int"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
@@ -92,7 +101,7 @@
 				<xs:restriction base="gpp:handle">
 					<xs:sequence>
 					</xs:sequence>
-					<xs:attribute name="module" type="gpp:python_module_path" fixed="gpp.builtin"/>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
    					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="instance_handler"/>
 				</xs:restriction>
 			</xs:complexContent>

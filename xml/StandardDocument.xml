@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+<!DOCTYPE project>
+<gpp:pacparse xmlns="http://github.com/HeroicKatora/PacketParsing"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
+	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
+	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema
+						http://github.com/HeroicKatora/PacketParsing/Standard StandardTypes">
+
+	<gpp:type name="int32">
+		<gpp:typehandle>
+			<std:integral subtype="int"/>
+		</gpp:typehandle>
+	</gpp:type>
+
+</gpp:pacparse>

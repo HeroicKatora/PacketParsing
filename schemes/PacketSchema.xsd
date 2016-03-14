@@ -6,24 +6,28 @@
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 		
 	<xs:simpleType name="python_identifier">
+		<xs:annotation><xs:documentation>A simple, single python identifier</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:pattern value="([a-zA-Z_])([a-zA-Z0-9_])*"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
 	<xs:simpleType name="packet_parsing_identifier">
+		<xs:annotation><xs:documentation>An identifier for packet parsing. It is less restrictive than a python identifier</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:pattern value="[a-zA-Z0-9_ ]*"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
 	<xs:simpleType name="python_module_path">
+		<xs:annotation><xs:documentation>A python path of module</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:pattern value="([a-zA-Z_])([a-zA-Z0-9_])*(\.([a-zA-Z_])([a-zA-Z0-9_])*)*"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
 	<xs:simpleType name="file_name">
+		<xs:annotation><xs:documentation>Allowed file names for xml specification files</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:pattern value="[^/]+"></xs:pattern>
 		</xs:restriction>
@@ -62,26 +66,51 @@
 	    		</xs:choice>
 	    	</xs:sequence>
 	    </xs:complexType>
-	    <xs:key name="key_python_name">
-			<xs:selector xpath="./gpp:import/gpp:instantiator_import"/>
+	    <xs:key name="key_python_object_name">
+			<xs:selector xpath="gpp:import/gpp:instantiator_import"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
+		
 		<xs:key name="key_type_name">
 			<xs:selector xpath="gpp:type|gpp:include/gpp:type_include"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
-	    <xs:key name="key_packet_name">
-			<xs:selector xpath="gpp:packet"/>
+		<xs:key name="key_io_name">
+			<xs:selector xpath="gpp:io_operator|gpp:include/gpp:io_include"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:key name="key_writer_name">
+			<xs:selector xpath="gpp:writer|gpp:include/gpp:writer_include"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:key name="key_reader_name">
+			<xs:selector xpath="gpp:reader|gpp:include/gpp:reader_include"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+	    <xs:key name="key_display_name">
+			<xs:selector xpath="gpp:display|gpp:include/gpp:display_include"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:key name="key_parser_name">
+			<xs:selector xpath="gpp:parser|gpp:include/gpp:parser_include"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:key name="key_printer_name">
+			<xs:selector xpath="gpp:printer|gpp:include/gpp:printer_include"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
 		
-		<xs:keyref name="ref_python_name" refer="key_python_name">
+		<xs:keyref name="ref_python_object_name" refer="key_python_object_name">
 	    	<xs:selector xpath=".//gpp:builtin"/>
 	    	<xs:field xpath="@implementor"/>
 	    </xs:keyref>
 	    <xs:keyref name="ref_type_name" refer="key_type_name">
 	    	<xs:selector xpath=".//gpp:type_ref"/>
 	    	<xs:field xpath="@ref_name"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_field_type" refer="key_type_name">
+	    	<xs:selector xpath=".//gpp:field"/>
+	    	<xs:field xpath="@type"/>
 	    </xs:keyref>
 	    
 	</xs:element>
@@ -260,7 +289,7 @@
 	   		<xs:annotation><xs:documentation>A type describes input/output and prints/parses data</xs:documentation></xs:annotation>
 	   		<xs:choice>
 	   			<xs:element ref="builtin"/>
-	   			<xs:element name="typehandle" type="type_handle_descriptor"/>
+	   			<xs:element ref="typehandle"/>
 	   			<xs:sequence>
 	   				<xs:group ref="iogroup"/>
 	   				<xs:group ref="displaygroup"/>
@@ -269,6 +298,72 @@
 	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
 	    </xs:complexType>
 	</xs:element>
+	
+	<xs:element name="display">
+		<xs:complexType>
+	    	<xs:annotation><xs:documentation>A display is a union of a parser and a printer</xs:documentation></xs:annotation>
+	    	<xs:choice>
+	   			<xs:element ref="builtin"/>
+   				<xs:group ref="displaygroup"/>
+	   		</xs:choice>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	    </xs:complexType>
+	</xs:element>
+    
+    <xs:element name="io_operator">
+	    <xs:complexType>
+	    	<xs:annotation><xs:documentation>An io_operator is a union of a reader and a writer</xs:documentation></xs:annotation>
+	    	<xs:choice>
+	    		<xs:element ref="builtin"/>
+	  			<xs:group ref="iogroup"/>
+	  		</xs:choice>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	    </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="parser">
+	    <xs:complexType>
+	    	<xs:annotation><xs:documentation>A parser takes a human like input (such as json or enums) and creates data. This need not be the reverse of a printer</xs:documentation></xs:annotation>
+	    	<xs:choice>
+	    		<xs:element ref="builtin"/>
+	  			<xs:element ref="parsehandle"/>
+	  		</xs:choice>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	   	</xs:complexType>
+   	</xs:element>
+   	
+   	<xs:element name="printer">
+		<xs:complexType>
+	   		<xs:annotation><xs:documentation>A printer forms a human readable string from the data</xs:documentation></xs:annotation>
+	    	<xs:choice>
+	    		<xs:element ref="builtin"/>
+	  			<xs:element ref="printhandle"/>
+	  		</xs:choice>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>	   		
+  		</xs:complexType>
+  	</xs:element>
+  	
+  	<xs:element name="reader">
+		<xs:complexType>
+		    <xs:annotation><xs:documentation>A reader creates data from a byte stream</xs:documentation></xs:annotation>
+		    <xs:choice>
+	    		<xs:element ref="builtin"/>
+	  			<xs:element ref="readhandle"/>
+	  		</xs:choice>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+   		</xs:complexType>
+   	</xs:element>
+   	
+   	<xs:element name="writer">
+		<xs:complexType>
+    		<xs:annotation><xs:documentation>A writer writes to a byte stream from the data</xs:documentation></xs:annotation>
+    		<xs:choice>
+	    		<xs:element ref="builtin"/>
+	  			<xs:element ref="writehandle"/>
+	  		</xs:choice>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+   		</xs:complexType>
+   	</xs:element>
 	
 	<xs:element name="packet">
 		<xs:complexType>
@@ -288,54 +383,22 @@
 	    	<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
 	    </xs:complexType>
 	</xs:element>
-	
-	<xs:element name="display">
-		<xs:complexType>
-	    	<xs:annotation><xs:documentation>A display is a union of a parser and a printer</xs:documentation></xs:annotation>
-	    </xs:complexType>
-	</xs:element>
-    
-    <xs:element name="io_operator">
-	    <xs:complexType>
-	    	<xs:annotation><xs:documentation>An io_operator is a union of a reader and a writer</xs:documentation></xs:annotation>
-	    	<xs:choice>
-	    		<xs:element ref="builtin"/>
-	  			<xs:group ref="iogroup"/>
-	  		</xs:choice>
-	    </xs:complexType>
-    </xs:element>
-    
-    <xs:element name="parser">
-	    <xs:complexType>
-	    	<xs:annotation><xs:documentation>A parser takes a human like input (such as json or enums) and creates data. This need not be the reverse of a printer</xs:documentation></xs:annotation>
-	   	</xs:complexType>
-   	</xs:element>
-   	
-   	<xs:element name="printer">
-		<xs:complexType>
-	   		<xs:annotation><xs:documentation>A printer forms a human readable string from the data</xs:documentation></xs:annotation>
-  		</xs:complexType>
-  	</xs:element>
-  	
-  	<xs:element name="reader">
-		<xs:complexType>
-		    <xs:annotation><xs:documentation>A reader creates data from a byte stream</xs:documentation></xs:annotation>
-   		</xs:complexType>
-   	</xs:element>
-   	
-   	<xs:element name="writer">
-		<xs:complexType>
-    		<xs:annotation><xs:documentation>A writer writes to a byte stream from the data</xs:documentation></xs:annotation>
-   		</xs:complexType>
-   	</xs:element>
+
+	<xs:element name="typehandle" type="type_handle_descriptor"/>
+	<xs:element name="iohandle" type="io_handle_descriptor"/>
+	<xs:element name="displayhandle" type="display_handle_descriptor"/>
+	<xs:element name="readhandle" type="reader_handle_descriptor"/>
+	<xs:element name="writehandle" type="writer_handle_descriptor"/>
+	<xs:element name="printhandle" type="printer_handle_descriptor"/>
+	<xs:element name="parsehandle" type="parser_handle_descriptor"/>
 
 	<xs:group name="iogroup">
 		<xs:annotation><xs:documentation>Groups the handlers of a type used for io</xs:documentation></xs:annotation>
 		<xs:choice>
-   			<xs:element name="iohandle" type="io_handle_descriptor"/>
+   			<xs:element ref="iohandle"/>
    			<xs:sequence>
-				<xs:element name="readhandle" type="reader_handle_descriptor"/>
-				<xs:element name="writehandle" type="writer_handle_descriptor"/>
+				<xs:element ref="readhandle"/>
+				<xs:element ref="writehandle"/>
 			</xs:sequence>
    		</xs:choice>
 	</xs:group>
@@ -343,10 +406,10 @@
     <xs:group name="displaygroup">
 		<xs:annotation><xs:documentation>Groups the handlers of a type used for display</xs:documentation></xs:annotation>
 		<xs:choice>
-			<xs:element name="displayhandle" type="display_handle_descriptor"/>
+			<xs:element ref="displayhandle"/>
 			<xs:sequence>
-				<xs:element name="printhandle" type="printer_handle_descriptor"/>
-				<xs:element name="parsehandle" type="parser_handle_descriptor"/>
+				<xs:element ref="printhandle"/>
+				<xs:element ref="parsehandle"/>
 			</xs:sequence>
 		</xs:choice>
     </xs:group>

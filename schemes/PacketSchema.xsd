@@ -4,7 +4,7 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
-		
+	
 	<xs:simpleType name="python_identifier">
 		<xs:annotation><xs:documentation>A simple, single python identifier</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
@@ -62,6 +62,8 @@
 	    			<xs:element ref="reader"/>
 	    			<xs:element ref="writer"/>
 	    			<xs:element ref="type"/>
+	    			<xs:element ref="global_field"/>
+	    			<xs:element ref="global_group"/>
 	    			<xs:element ref="packet"/>
 	    		</xs:choice>
 	    	</xs:sequence>
@@ -99,6 +101,14 @@
 			<xs:selector xpath="gpp:printer|gpp:include/gpp:printer_include"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
+		<xs:key name="key_global_field_name">
+			<xs:selector xpath="gpp:global_field"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:key name="key_global_group_name">
+			<xs:selector xpath="gpp:global_group"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
 		
 		<xs:keyref name="ref_python_object_name" refer="key_python_object_name">
 	    	<xs:selector xpath=".//gpp:builtin"/>
@@ -108,9 +118,41 @@
 	    	<xs:selector xpath=".//gpp:type_ref"/>
 	    	<xs:field xpath="@ref_name"/>
 	    </xs:keyref>
+	    <xs:keyref name="ref_io_name" refer="key_io_name">
+	    	<xs:selector xpath=".//gpp:io_ref"/>
+	    	<xs:field xpath="@ref_name"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_reader_name" refer="key_reader_name">
+	    	<xs:selector xpath=".//gpp:reader_ref"/>
+	    	<xs:field xpath="@ref_name"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_writer_name" refer="key_writer_name">
+	    	<xs:selector xpath=".//gpp:writer_ref"/>
+	    	<xs:field xpath="@ref_name"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_display_name" refer="key_display_name">
+	    	<xs:selector xpath=".//gpp:display_ref"/>
+	    	<xs:field xpath="@ref_name"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_parser_name" refer="key_parser_name">
+	    	<xs:selector xpath=".//gpp:parser_ref"/>
+	    	<xs:field xpath="@ref_name"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_printer_name" refer="key_printer_name">
+	    	<xs:selector xpath=".//gpp:printer_ref"/>
+	    	<xs:field xpath="@ref_name"/>
+	    </xs:keyref>
 	    <xs:keyref name="ref_field_type" refer="key_type_name">
 	    	<xs:selector xpath=".//gpp:field"/>
 	    	<xs:field xpath="@type"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_global_field" refer="key_global_field_name">
+	    	<xs:selector xpath=".//gpp:field_ref"/>
+	    	<xs:field xpath="@ref"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_global_group" refer="key_global_group_name">
+	    	<xs:selector xpath=".//gpp:group_ref"/>
+	    	<xs:field xpath="@ref"/>
 	    </xs:keyref>
 	    
 	</xs:element>
@@ -364,25 +406,6 @@
 	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
    		</xs:complexType>
    	</xs:element>
-	
-	<xs:element name="packet">
-		<xs:complexType>
-	    	<xs:sequence>
-	    		<xs:element name="field" minOccurs="0" maxOccurs="unbounded">
-	    			<xs:complexType>
-	    				<xs:sequence>
-	    					<xs:annotation><xs:documentation>When a value occurs inside a field reading fails when the read value does not match any of it.</xs:documentation></xs:annotation>
-	    					<xs:element name="value" minOccurs="0" maxOccurs="unbounded"/>
-	    				</xs:sequence>
-	    				<xs:attribute name="name" use="required" type="xs:string"/>
-	    				<xs:attribute name="displayname" use="optional" type="xs:string"/>
-	    				<xs:attribute name="type" use="required" type="xs:string"/>
-	    			</xs:complexType>
-	    		</xs:element>
-	    	</xs:sequence>
-	    	<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
-	    </xs:complexType>
-	</xs:element>
 
 	<xs:element name="typehandle" type="type_handle_descriptor"/>
 	<xs:element name="iohandle" type="io_handle_descriptor"/>
@@ -413,5 +436,120 @@
 			</xs:sequence>
 		</xs:choice>
     </xs:group>
+	
+	<xs:element name="parsed">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="gpp:parser_handle_descriptor">
+					<xs:attribute name="value" type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="field">
+		<xs:sequence>
+			<xs:annotation><xs:documentation>When a value occurs inside a field reading fails when the read value does not match any of it.</xs:documentation></xs:annotation>
+			<xs:element ref="parsed" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="type" use="required" type="gpp:packet_parsing_identifier"/>
+	</xs:complexType>
+	
+	<xs:element name="field">
+		<xs:annotation><xs:documentation>A fixed length value</xs:documentation></xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="field">
+					<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
+					<xs:attribute name="displayname" use="optional" type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="global_field">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="field"/>
+				<xs:element ref="gpp:builtin"/>
+			</xs:choice>
+			<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="field_ref">
+		<xs:complexType>
+			<xs:attribute name="ref" use="required" type="gpp:packet_parsing_identifier"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="group">
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element ref="field_ref"/>
+			<xs:element ref="field"/>
+			<xs:element ref="group_ref"/>
+			<xs:element ref="group"/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name="group">
+		<xs:annotation><xs:documentation>A group is a fixed length aggregation of fields and other groups</xs:documentation></xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="group">
+					<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
+					<xs:attribute name="displayname" use="optional" type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>	
+	
+	<xs:element name="global_group">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="group"/>
+				<xs:element ref="gpp:builtin"/>
+			</xs:choice>
+			<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="group_ref">
+		<xs:complexType>
+			<xs:attribute name="ref" use="required" type="gpp:packet_parsing_identifier"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="module">
+		<xs:annotation><xs:documentation>A module is like a field or group but with a dynamic length</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:any minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
+		<xs:anyAttribute></xs:anyAttribute>
+	</xs:complexType>
+	
+	<xs:element name="module" type="module" abstract="true"/>
+	
+	<xs:element name="module_ref">
+		<xs:complexType>
+			<xs:attribute name="ref" use="required" type="gpp:packet_parsing_identifier"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="packet">
+		<xs:complexType>
+	    	<xs:sequence>
+	    		<xs:choice minOccurs="0" maxOccurs="unbounded">
+		    		<xs:element ref="field"/>
+		    		<xs:element ref="field_ref"/>
+		    		<xs:element ref="group"/>
+		    		<xs:element ref="group_ref"/>
+		    		<xs:element ref="module_ref"/>
+	    		</xs:choice>
+	    	</xs:sequence>
+	    	<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
+	    </xs:complexType>
+	</xs:element>
 
 </xs:schema>

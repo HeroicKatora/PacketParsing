@@ -14,12 +14,8 @@
 		<gpp:instantiator_import instance_name="ipChecksum" name="IP_Checksum"/>
 	</gpp:import>
 	
-	
 	<gpp:include source_document="StandardDocument">
 		<gpp:type_include instance_name="integral" name="integral"/>
-	</gpp:include>
-	<gpp:include source_document="a">
-		<gpp:type_include instance_name="Import" name="Include"/>
 	</gpp:include>
 	
 	<type name="IP_Version">
@@ -29,19 +25,17 @@
 		<displayhandle>
 			<std:enumeration>
 				<std:enum_fallback>
-					<std:display_integral>
-						<std:outformat formatstring="%h"/>
-					</std:display_integral>
+					<std:display_integral formatstring="{:x}"/>
 				</std:enum_fallback>
 				<std:enumvalue mnemonic="IP_v4">
-					<std:parsed value="0x04">
-						<std:parser><gpp:type_ref ref_name="integral"/></std:parser>
-					</std:parsed>
+					<gpp:parsed value="0x04">
+						<gpp:type_ref ref_name="integral"/>
+					</gpp:parsed>
 				</std:enumvalue>
 				<std:enumvalue mnemonic="IP_v6">
-					<std:parsed value="0x06">
-						<std:parser><gpp:type_ref ref_name="integral"/></std:parser>
-					</std:parsed>
+					<gpp:parsed value="0x06">
+						<gpp:type_ref ref_name="integral"/>
+					</gpp:parsed>
 				</std:enumvalue>
 				<std:enumvalue mnemonic="IP_vMaU">
 					<builtin implementor="IP_Version_Fictional"/>
@@ -52,7 +46,7 @@
 
 	<type name="IP_HL">
 		<typehandle>
-			<std:integral subtype="4bit" formatstring="{:i}"/>
+			<std:integral subtype="4bit" formatstring="{:d}"/>
 		</typehandle>
 	</type>
 
@@ -67,7 +61,7 @@
 	
 	<type name="IP_Length">
 		<typehandle>
-			<std:integral subtype="uint16" formatstring="{:i} header quad bytes"/>
+			<std:integral subtype="uint16" formatstring="{:d} header quad bytes"/>
 		</typehandle>
 	</type>
 	
@@ -94,7 +88,7 @@
 	
 	<type name="IP_TTL">
 		<typehandle>
-			<std:integral subtype="byte" formatstring="{:i}"/>
+			<std:integral subtype="byte" formatstring="{:d}"/>
 		</typehandle>
 	</type>
 	
@@ -105,10 +99,11 @@
 		<displayhandle>
 			<std:enumeration>
 				<std:enum_fallback>
-					<std:display_integral>
-						<std:outformat formatstring="%x"/>
-					</std:display_integral>
+					<std:display_integral formatstring="{:x}"/>
 				</std:enum_fallback>
+				<std:enumvalue>
+					<gpp:parsed value="4"><type_ref ref_name="integral"/></gpp:parsed>
+				</std:enumvalue>
 				<!-- Implement the protocol values -->
 			</std:enumeration>
 		</displayhandle>
@@ -128,30 +123,24 @@
 		</typehandle>
 	</type>
 
-	<type name="Test">
-		<typehandle>
-			<type_ref ref_name="Include"/>
-		</typehandle>
-	</type>
-
 	<packet name="IPv4">
-		<field name="version" type="IP_Version">
-			<value>IP_v4</value>
+		<field pythonname="version" type="IP_Version">
+			<parsed value="IPv4"><type_ref ref_name="integral"/></parsed>
 		</field>
-		<field name="ip_header_length" displayname="IP Header Length"
+		<field pythonname="ip_header_length" displayname="IP Header Length"
 			type="IP_HL"></field>
-		<field name="type_of_service" displayname="Type of Service"
+		<field pythonname="type_of_service" displayname="Type of Service"
 			type="IP_TOS"></field>
-		<field name="total_length" displayname="Total Length" type="IP_Length"></field>
-		<field name="id" displayname="Identification" type="IP_ID"></field>
-		<field name="flags" displayname="Flags" type="IP_Flags"></field>
-		<field name="fragment_offset" displayname="Fragment Offset"
+		<field pythonname="total_length" displayname="Total Length" type="IP_Length"></field>
+		<field pythonname="id" displayname="Identification" type="IP_ID"></field>
+		<field pythonname="flags" displayname="Flags" type="IP_Flags"></field>
+		<field pythonname="fragment_offset" displayname="Fragment Offset"
 			type="IP_Frag"></field>
-		<field name="ttl" displayname="Time to Live" type="IP_TTL"></field>
-		<field name="protocol" displayname="Protocol" type="IP_Protocol"></field>
-		<field name="checksum" displayname="Header Checksum" type="IP_Checksum"></field>
-		<field name="source" displayname="Source address" type="IP_Address"></field>
-		<field name="destination" displayname="Destination address"
+		<field pythonname="ttl" displayname="Time to Live" type="IP_TTL"></field>
+		<field pythonname="protocol" displayname="Protocol" type="IP_Protocol"></field>
+		<field pythonname="checksum" displayname="Header Checksum" type="IP_Checksum"></field>
+		<field pythonname="source" displayname="Source address" type="IP_Address"></field>
+		<field pythonname="destination" displayname="Destination address"
 			type="IP_Address"></field>
 		<!-- <dynamic name="options" displayname="Options and Padding"
 			type="IP_Options">

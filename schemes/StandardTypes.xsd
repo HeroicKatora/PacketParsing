@@ -18,7 +18,7 @@
 	
 	<xs:simpleType name="integer_oformat">
 		<xs:restriction base="xs:string">
-			<xs:pattern value=".*\{:(i|x|X|b)\}.*"></xs:pattern>
+			<xs:pattern value=".*\{:((\+|-)?0?\d*(b|o|d|x|X)|0?\d*c)\}.*"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -34,22 +34,7 @@
 							<xs:complexType>
 								<xs:choice>
 									<xs:element ref="gpp:builtin"/>
-									<xs:element name="parsed">
-										<xs:complexType>
-											<xs:sequence>
-												<xs:element name="parser">
-													<xs:complexType>
-														<xs:choice>
-															<xs:element ref="gpp:type_ref"/>
-															<xs:element ref="gpp:display_ref"/>
-															<xs:element ref="gpp:parser_ref"/>
-														</xs:choice>
-													</xs:complexType>
-												</xs:element>	
-											</xs:sequence>
-											<xs:attribute name="value" type="xs:string"/>
-										</xs:complexType>
-									</xs:element>
+									<xs:element ref="gpp:parsed"/>
 								</xs:choice>
 								<xs:attribute name="mnemonic" type="xs:string"/>
 							</xs:complexType>
@@ -72,9 +57,7 @@
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:handle">
-					<xs:sequence>
-						<xs:element ref="outformat" minOccurs="0"/>
-					</xs:sequence>
+					<xs:attribute name="formatstring" type="integer_oformat" use="optional"/>
 					<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
    					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="display_integral"/>
 				</xs:restriction>
@@ -86,10 +69,10 @@
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:handle">
+   					<xs:attribute name="subtype" type="integral_subtype" default="int"/>
 					<xs:attribute name="formatstring" type="integer_oformat" use="optional"/>
 					<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
    					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="integral"/>
-   					<xs:attribute name="subtype" type="integral_subtype" default="int"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
@@ -99,13 +82,41 @@
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:handle">
-					<xs:sequence>
-					</xs:sequence>
 					<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
    					<xs:attribute name="implementor" type="gpp:python_identifier" fixed="instance_handler"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
-	</xs:element> 
-
+	</xs:element>
+	
+	<xs:element name="builtin_module" substitutionGroup="gpp:module">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="gpp:module">
+					<xs:sequence>
+						<xs:element ref="gpp:builtin"/>
+					</xs:sequence>
+					<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="joint_module" substitutionGroup="gpp:module">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="gpp:module">
+					<xs:choice minOccurs="1" maxOccurs="unbounded">
+						<xs:element ref="gpp:field"/>
+						<xs:element ref="gpp:field_ref"/>
+						<xs:element ref="gpp:group"/>
+						<xs:element ref="gpp:group_ref"/>
+						<xs:element ref="gpp:module"/>
+					</xs:choice>
+					<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	
 </xs:schema>

@@ -7,10 +7,52 @@
 	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema
 						http://github.com/HeroicKatora/PacketParsing/Standard StandardTypes">
 
+	<gpp:type name="int64">
+		<gpp:typehandle>
+			<std:integral subtype="64bit"/>
+		</gpp:typehandle>
+	</gpp:type>
+	
+	<gpp:type name="long">
+		<gpp:typehandle>
+			<gpp:type_ref ref_name="int64"/>
+		</gpp:typehandle>
+	</gpp:type>
+
 	<gpp:type name="int32">
 		<gpp:typehandle>
 			<std:integral subtype="int"/>
 		</gpp:typehandle>
 	</gpp:type>
+	
+	<gpp:type name="integer">
+		<gpp:typehandle>
+			<gpp:type_ref ref_name="int32"/>
+		</gpp:typehandle>
+	</gpp:type>
+	
+	<gpp:type name="int16">
+		<gpp:typehandle>
+			<std:integral subtype="short"/>
+		</gpp:typehandle>
+	</gpp:type>
 
+	<gpp:type name="int8">
+		<gpp:typehandle>
+			<std:integral subtype="byte"/>
+		</gpp:typehandle>
+	</gpp:type>
+	
+	<gpp:type name="char">
+		<gpp:typehandle>
+			<std:integral subtype="char" formatstring="{:c}"/>
+		</gpp:typehandle>
+	</gpp:type>
+	
+	<gpp:type name="short">
+		<gpp:typehandle>
+			<gpp:type_ref ref_name="int8"/>
+		</gpp:typehandle>
+	</gpp:type>
+	
 </gpp:pacparse>

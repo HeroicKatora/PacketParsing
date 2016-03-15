@@ -124,24 +124,26 @@
 	</type>
 
 	<packet name="IPv4">
-		<field pythonname="version" type="IP_Version">
-			<parsed value="IPv4"><type_ref ref_name="integral"/></parsed>
-		</field>
-		<field pythonname="ip_header_length" displayname="IP Header Length"
-			type="IP_HL"></field>
-		<field pythonname="type_of_service" displayname="Type of Service"
-			type="IP_TOS"></field>
-		<field pythonname="total_length" displayname="Total Length" type="IP_Length"></field>
-		<field pythonname="id" displayname="Identification" type="IP_ID"></field>
-		<field pythonname="flags" displayname="Flags" type="IP_Flags"></field>
-		<field pythonname="fragment_offset" displayname="Fragment Offset"
-			type="IP_Frag"></field>
-		<field pythonname="ttl" displayname="Time to Live" type="IP_TTL"></field>
-		<field pythonname="protocol" displayname="Protocol" type="IP_Protocol"></field>
-		<field pythonname="checksum" displayname="Header Checksum" type="IP_Checksum"></field>
-		<field pythonname="source" displayname="Source address" type="IP_Address"></field>
-		<field pythonname="destination" displayname="Destination address"
-			type="IP_Address"></field>
+		<group pythonname="header">
+			<field pythonname="version" type="IP_Version">
+				<parsed value="4"><type_ref ref_name="integral"/></parsed>
+			</field>
+			<field pythonname="ip_header_length" displayname="IP Header Length"
+				type="IP_HL"></field>
+			<field pythonname="type_of_service" displayname="Type of Service"
+				type="IP_TOS"></field>
+			<field pythonname="total_length" displayname="Total Length" type="IP_Length"></field>
+			<field pythonname="id" displayname="Identification" type="IP_ID"></field>
+			<field pythonname="flags" displayname="Flags" type="IP_Flags"></field>
+			<field pythonname="fragment_offset" displayname="Fragment Offset"
+				type="IP_Frag"></field>
+			<field pythonname="ttl" displayname="Time to Live" type="IP_TTL"></field>
+			<field pythonname="protocol" displayname="Protocol" type="IP_Protocol"></field>
+			<field pythonname="checksum" displayname="Header Checksum" type="IP_Checksum"></field>
+			<field pythonname="source" displayname="Source address" type="IP_Address"></field>
+			<field pythonname="destination" displayname="Destination address"
+				type="IP_Address"></field>
+		</group>
 		<!-- <dynamic name="options" displayname="Options and Padding"
 			type="IP_Options">
 			<builtin />

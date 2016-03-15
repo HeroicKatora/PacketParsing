@@ -109,6 +109,14 @@
 			<xs:selector xpath="gpp:global_group"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
+		<xs:key name="key_global_module_name">
+			<xs:selector xpath="gpp:global_module"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
+		<xs:key name="key_packet_name">
+			<xs:selector xpath="gpp:packet"/>
+			<xs:field xpath="@name"/>
+		</xs:key>
 		
 		<xs:keyref name="ref_python_object_name" refer="key_python_object_name">
 	    	<xs:selector xpath=".//gpp:builtin"/>
@@ -152,6 +160,14 @@
 	    </xs:keyref>
 	    <xs:keyref name="ref_global_group" refer="key_global_group_name">
 	    	<xs:selector xpath=".//gpp:group_ref"/>
+	    	<xs:field xpath="@ref"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_global_module" refer="key_global_module_name">
+	    	<xs:selector xpath=".//gpp:module_ref"/>
+	    	<xs:field xpath="@ref"/>
+	    </xs:keyref>
+	    <xs:keyref name="ref_packet" refer="key_packet_name">
+	    	<xs:selector xpath=".//gpp:packet_ref"/>
 	    	<xs:field xpath="@ref"/>
 	    </xs:keyref>
 	    
@@ -448,22 +464,19 @@
 	</xs:element>
 	
 	<xs:complexType name="field">
-		<xs:sequence>
-			<xs:annotation><xs:documentation>When a value occurs inside a field reading fails when the read value does not match any of it.</xs:documentation></xs:annotation>
-			<xs:element ref="parsed" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>
-		<xs:attribute name="type" use="required" type="gpp:packet_parsing_identifier"/>
+		
 	</xs:complexType>
 	
 	<xs:element name="field">
 		<xs:annotation><xs:documentation>A fixed length value</xs:documentation></xs:annotation>
 		<xs:complexType>
-			<xs:complexContent>
-				<xs:extension base="field">
-					<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
-					<xs:attribute name="displayname" use="optional" type="xs:string"/>
-				</xs:extension>
-			</xs:complexContent>
+			<xs:annotation><xs:documentation>When a value occurs inside a field reading fails when the read value does not match any of it.</xs:documentation></xs:annotation>
+			<xs:sequence>
+				<xs:element ref="parsed" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="type" use="required" type="gpp:packet_parsing_identifier"/>
+			<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
+			<xs:attribute name="displayname" use="optional" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	
@@ -479,30 +492,28 @@
 	
 	<xs:element name="field_ref">
 		<xs:complexType>
+			<xs:attribute name="pythonname" use="optional" type="gpp:python_identifier"/>
 			<xs:attribute name="ref" use="required" type="gpp:packet_parsing_identifier"/>
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:complexType name="group">
-		<xs:choice minOccurs="1" maxOccurs="unbounded">
-			<xs:element ref="field_ref"/>
-			<xs:element ref="field"/>
-			<xs:element ref="group_ref"/>
-			<xs:element ref="group"/>
-		</xs:choice>
-	</xs:complexType>
-	
 	<xs:element name="group">
 		<xs:annotation><xs:documentation>A group is a fixed length aggregation of fields and other groups</xs:documentation></xs:annotation>
 		<xs:complexType>
-			<xs:complexContent>
-				<xs:extension base="group">
-					<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
-					<xs:attribute name="displayname" use="optional" type="xs:string"/>
-				</xs:extension>
-			</xs:complexContent>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element ref="field_ref"/>
+				<xs:element ref="field"/>
+				<xs:element ref="group_ref"/>
+				<xs:element ref="group"/>
+			</xs:choice>
+			<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
+			<xs:attribute name="displayname" use="optional" type="xs:string"/>
 		</xs:complexType>
-	</xs:element>	
+		<xs:unique name="group_unique_pythonname">
+			<xs:selector xpath="gpp:field|gpp:field_ref|gpp:group|gpp:group_ref"/>
+			<xs:field xpath="@pythonname"/>
+		</xs:unique>
+	</xs:element>
 	
 	<xs:element name="global_group">
 		<xs:complexType>
@@ -516,6 +527,7 @@
 	
 	<xs:element name="group_ref">
 		<xs:complexType>
+			<xs:attribute name="pythonname" use="optional" type="gpp:python_identifier"/>
 			<xs:attribute name="ref" use="required" type="gpp:packet_parsing_identifier"/>
 		</xs:complexType>
 	</xs:element>
@@ -525,14 +537,25 @@
 		<xs:sequence>
 			<xs:any minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
-		<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
+		<xs:attributeGroup ref="direct_builtin"/>
 		<xs:anyAttribute></xs:anyAttribute>
 	</xs:complexType>
 	
 	<xs:element name="module" type="module" abstract="true"/>
 	
+	<xs:element name="global_module">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="module"/>
+				<xs:element ref="builtin"/>
+			</xs:choice>
+			<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
+		</xs:complexType>
+	</xs:element>
+	
 	<xs:element name="module_ref">
 		<xs:complexType>
+			<xs:attribute name="pythonname" use="optional" type="gpp:python_identifier"/>
 			<xs:attribute name="ref" use="required" type="gpp:packet_parsing_identifier"/>
 		</xs:complexType>
 	</xs:element>
@@ -545,11 +568,25 @@
 		    		<xs:element ref="field_ref"/>
 		    		<xs:element ref="group"/>
 		    		<xs:element ref="group_ref"/>
+		    		<xs:element ref="module"/>
 		    		<xs:element ref="module_ref"/>
+		    		<xs:element ref="packet"/>
+		    		<xs:element ref="packet_ref"/>
 	    		</xs:choice>
 	    	</xs:sequence>
 	    	<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
 	    </xs:complexType>
+	    <xs:unique name="packet_unique_pythonname">
+	    	<xs:selector xpath="gpp:field|gpp:field_ref|gpp:group|gpp:group_ref|gpp:module|gpp:module_ref|gpp:packet|gpp:packet_ref"/>
+	    	<xs:field xpath="@pythonname"/>
+	    </xs:unique>
+	</xs:element>
+	
+	<xs:element name="packet_ref">
+		<xs:complexType>
+			<xs:attribute name="pythonname" use="optional" type="gpp:python_identifier"/>
+			<xs:attribute name="ref" type="packet_parsing_identifier" use="required"/>
+		</xs:complexType>
 	</xs:element>
 
 </xs:schema>

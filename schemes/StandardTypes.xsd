@@ -88,20 +88,7 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
-	
-	<xs:element name="builtin_module" substitutionGroup="gpp:module">
-		<xs:complexType>
-			<xs:complexContent>
-				<xs:restriction base="gpp:module">
-					<xs:sequence>
-						<xs:element ref="gpp:builtin"/>
-					</xs:sequence>
-					<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
-				</xs:restriction>
-			</xs:complexContent>
-		</xs:complexType>
-	</xs:element>
-	
+
 	<xs:element name="joint_module" substitutionGroup="gpp:module">
 		<xs:complexType>
 			<xs:complexContent>
@@ -112,8 +99,33 @@
 						<xs:element ref="gpp:group"/>
 						<xs:element ref="gpp:group_ref"/>
 						<xs:element ref="gpp:module"/>
+						<xs:element ref="gpp:module_ref"/>
 					</xs:choice>
-					<xs:attribute name="name" use="required" type="gpp:packet_parsing_identifier"/>
+			   		<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
+			   		<xs:attribute name="implementor" type="gpp:python_identifier" fixed="joint_module"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:unique name="unique_joint_module_pythonname">
+			<xs:selector xpath="gpp:field|gpp:field_ref|gpp:group|gpp:group_ref|gpp:module"/>
+			<xs:field xpath="@pythonname"></xs:field>
+		</xs:unique>
+	</xs:element>
+	
+	<xs:element name="first_match" substitutionGroup="gpp:module">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="gpp:module">
+					<xs:choice minOccurs="1" maxOccurs="unbounded">
+						<xs:element ref="gpp:field"/>
+						<xs:element ref="gpp:field_ref"/>
+						<xs:element ref="gpp:group"/>
+						<xs:element ref="gpp:group_ref"/>
+						<xs:element ref="gpp:module"/>
+						<xs:element ref="gpp:module_ref"/>
+					</xs:choice>
+					<xs:attribute name="module" type="gpp:python_module_path" fixed="xmlparsing.builtin"/>
+			   		<xs:attribute name="implementor" type="gpp:python_identifier" fixed="match_module"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>

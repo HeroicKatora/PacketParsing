@@ -7,7 +7,7 @@ Created on 13.03.2016
 from enum import Enum
 from builtins import str, KeyError
 from xml.etree import ElementTree
-from xmlparsing import builtin
+from gpp.xmlparsing import builtin
 
 
 class SchemeLibrary(Enum):

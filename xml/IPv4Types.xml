@@ -7,15 +7,17 @@
 	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema
 						http://github.com/HeroicKatora/PacketParsing/Standard StandardTypes">
 	
-	<gpp:import module="gpp.standard">
+	<gpp:import module="gpp.builtin">
 		<gpp:instantiator_import instance_name="ipVersion" name="IP_Version_Fictional"/>
 		<gpp:instantiator_import instance_name="ipTOS" name="IP_TOS"/>
 		<gpp:instantiator_import instance_name="ipID" name="IP_ID"/>
 		<gpp:instantiator_import instance_name="ipChecksum" name="IP_Checksum"/>
+		<gpp:instantiator_import instance_name="ipAddressDisplay" name="IP_Address_Display"/>
 	</gpp:import>
 	
 	<gpp:include source_document="StandardDocument">
-		<gpp:type_include instance_name="integral" name="integral"/>
+		<gpp:type_include instance_name="integer" name="integral"/>
+		<gpp:type_include instance_name="char" name="char"/>
 	</gpp:include>
 	
 	<type name="IP_Version">
@@ -117,10 +119,14 @@
 			<builtin implementor="IP_Checksum"></builtin>
 		</displayhandle>
 	</type>
+	
 	<type name="IP_Address">
-		<typehandle>
+		<iohandle>
 			<std:integral subtype="uint32"/>
-		</typehandle>
+		</iohandle>
+		<displayhandle>
+			<builtin implementor="IP_Address_Display"></builtin>
+		</displayhandle>
 	</type>
 
 	<packet name="IPv4">

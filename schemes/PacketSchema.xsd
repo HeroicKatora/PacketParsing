@@ -29,7 +29,7 @@
 	<xs:simpleType name="file_name">
 		<xs:annotation><xs:documentation>Allowed file names for xml specification files</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:pattern value="[^/]+"></xs:pattern>
+			<xs:pattern value="[^/]+"/>
 		</xs:restriction>
 	</xs:simpleType>
 		
@@ -42,7 +42,13 @@
 	    	</xs:attribute>
 	    </xs:complexType>
     </xs:element>
-    
+
+	<xs:element name="direct_builtin">
+		<xs:complexType>
+			<xs:attributeGroup ref="direct_builtin"/>
+		</xs:complexType>
+	</xs:element>
+
     <xs:attributeGroup name="direct_builtin">
    		<xs:annotation><xs:documentation>Import a builtin directly without naming it first</xs:documentation></xs:annotation>
    		<xs:attribute name="module" type="python_module_path"/>
@@ -189,9 +195,10 @@
 		<xs:complexType>
 			<xs:annotation><xs:documentation>Specifies a python module to import from</xs:documentation></xs:annotation>
 			<xs:sequence>
-				<xs:element ref="instantiator_import" minOccurs="1" maxOccurs="unbounded"/>
+				<xs:element ref="instantiator_import" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute name="module" type="python_module_path"></xs:attribute>
+			<xs:attribute name="module" type="python_module_path" use="required"/>
+			<xs:attribute name="library" type="python_identifier" use="optional" default="library"/>
 		</xs:complexType>
 	</xs:element>
 	
@@ -254,8 +261,7 @@
 		<xs:sequence>
 			<xs:any minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
-    	<xs:attributeGroup ref="direct_builtin"></xs:attributeGroup>
-		<xs:anyAttribute></xs:anyAttribute>
+		<xs:anyAttribute/>
     </xs:complexType>
     
 	<xs:element name="type_basehandler" type="handle" abstract="true"/>
@@ -353,7 +359,7 @@
 	   				<xs:group ref="displaygroup"/>
 	   			</xs:sequence>
 	   		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
 	    </xs:complexType>
 	</xs:element>
 	
@@ -364,7 +370,7 @@
 	   			<xs:element ref="builtin"/>
    				<xs:group ref="displaygroup"/>
 	   		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
 	    </xs:complexType>
 	</xs:element>
     
@@ -375,7 +381,7 @@
 	    		<xs:element ref="builtin"/>
 	  			<xs:group ref="iogroup"/>
 	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
 	    </xs:complexType>
     </xs:element>
     
@@ -386,7 +392,7 @@
 	    		<xs:element ref="builtin"/>
 	  			<xs:element ref="parsehandle"/>
 	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
 	   	</xs:complexType>
    	</xs:element>
    	
@@ -397,7 +403,7 @@
 	    		<xs:element ref="builtin"/>
 	  			<xs:element ref="printhandle"/>
 	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>	   		
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
   		</xs:complexType>
   	</xs:element>
   	
@@ -408,7 +414,7 @@
 	    		<xs:element ref="builtin"/>
 	  			<xs:element ref="readhandle"/>
 	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
    		</xs:complexType>
    	</xs:element>
    	
@@ -419,7 +425,7 @@
 	    		<xs:element ref="builtin"/>
 	  			<xs:element ref="writehandle"/>
 	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"></xs:attribute>
+	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
    		</xs:complexType>
    	</xs:element>
 
@@ -538,7 +544,7 @@
 			<xs:any minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attributeGroup ref="direct_builtin"/>
-		<xs:anyAttribute></xs:anyAttribute>
+		<xs:anyAttribute/>
 	</xs:complexType>
 	
 	<xs:element name="module" type="module" abstract="true"/>

@@ -1,11 +1,10 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<!DOCTYPE project>
 <gpp:pacparse xmlns="http://github.com/HeroicKatora/PacketParsing" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
 	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
-	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing PacketSchema
-						http://github.com/HeroicKatora/PacketParsing/Standard StandardTypes">
+	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing https://raw.githubusercontent.com/HeroicKatora/PacketParsing/master/schemes/PacketSchema.xsd
+						http://github.com/HeroicKatora/PacketParsing/Standard https://github.com/HeroicKatora/PacketParsing/blob/master/schemes/PacketSchema.xsd">
 	
 	<gpp:import module="gpp.builtin">
 		<gpp:instantiator_import instance_name="ipVersion" name="IP_Version_Fictional"/>
@@ -116,7 +115,7 @@
 			<std:integral subtype="uint16"/>
 		</iohandle>
 		<displayhandle>
-			<builtin implementor="IP_Checksum"></builtin>
+			<builtin implementor="IP_Checksum"/>
 		</displayhandle>
 	</type>
 	
@@ -125,7 +124,7 @@
 			<std:integral subtype="uint32"/>
 		</iohandle>
 		<displayhandle>
-			<builtin implementor="IP_Address_Display"></builtin>
+			<builtin implementor="IP_Address_Display"/>
 		</displayhandle>
 	</type>
 
@@ -135,25 +134,21 @@
 				<parsed value="4"><type_ref ref_name="integral"/></parsed>
 			</field>
 			<field pythonname="ip_header_length" displayname="IP Header Length"
-				type="IP_HL"></field>
+				type="IP_HL"/>
 			<field pythonname="type_of_service" displayname="Type of Service"
-				type="IP_TOS"></field>
-			<field pythonname="total_length" displayname="Total Length" type="IP_Length"></field>
-			<field pythonname="id" displayname="Identification" type="IP_ID"></field>
-			<field pythonname="flags" displayname="Flags" type="IP_Flags"></field>
+				type="IP_TOS"/>
+			<field pythonname="total_length" displayname="Total Length" type="IP_Length"/>
+			<field pythonname="id" displayname="Identification" type="IP_ID"/>
+			<field pythonname="flags" displayname="Flags" type="IP_Flags"/>
 			<field pythonname="fragment_offset" displayname="Fragment Offset"
-				type="IP_Frag"></field>
-			<field pythonname="ttl" displayname="Time to Live" type="IP_TTL"></field>
-			<field pythonname="protocol" displayname="Protocol" type="IP_Protocol"></field>
-			<field pythonname="checksum" displayname="Header Checksum" type="IP_Checksum"></field>
-			<field pythonname="source" displayname="Source address" type="IP_Address"></field>
+				type="IP_Frag"/>
+			<field pythonname="ttl" displayname="Time to Live" type="IP_TTL"/>
+			<field pythonname="protocol" displayname="Protocol" type="IP_Protocol"/>
+			<field pythonname="checksum" displayname="Header Checksum" type="IP_Checksum"/>
+			<field pythonname="source" displayname="Source address" type="IP_Address"/>
 			<field pythonname="destination" displayname="Destination address"
-				type="IP_Address"></field>
+				type="IP_Address"/>
 		</group>
-		<!-- <dynamic name="options" displayname="Options and Padding"
-			type="IP_Options">
-			<builtin />
-		</dynamic> -->
 	</packet>
 </gpp:pacparse>
 

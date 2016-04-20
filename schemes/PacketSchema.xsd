@@ -193,7 +193,7 @@
 	
 	<xs:element name="import">
 		<xs:complexType>
-			<xs:annotation><xs:documentation>Specifies a python module to import from</xs:documentation></xs:annotation>
+			<xs:annotation><xs:documentation>Specifies a python module to import from, imports can either be a single type or a whole library</xs:documentation></xs:annotation>
 			<xs:sequence>
 				<xs:element ref="instantiator_import" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
@@ -237,7 +237,7 @@
 			<xs:attribute name="source_document" type="file_name" use="required">
 				<xs:annotation><xs:documentation>File name of another source document</xs:documentation></xs:annotation>
 			</xs:attribute>
-			<xs:attribute name="document_source" type="xs:anyURI">
+			<xs:attribute name="source_module" type="python_module_path">
 				<xs:annotation><xs:documentation>Descriptor for the source of the other document</xs:documentation></xs:annotation>
 			</xs:attribute>
 		</xs:complexType>

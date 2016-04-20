@@ -10,7 +10,7 @@ from os import listdir
 from gpp.xmlparsing import XMLRegistry
 
 
-class PacketContent:
+class PacketContent(metaclass=ABCMeta):
     """
     A part of a packet with dynamic size or content
     """
@@ -23,7 +23,7 @@ class PacketContent:
         pass
 
 
-class PacketField(PacketContent):
+class PacketField(PacketContent,metaclass=ABCMeta):
     """
     A field has additional printing and parsing capabilities
     """
@@ -35,6 +35,7 @@ class PacketField(PacketContent):
     def parse(self, charstream):
         pass
 
+    @abstractclassmethod
     def get(self):
         pass
 
@@ -54,14 +55,14 @@ if __name__ == '__main__':
             importXs.attrib['namespace'] = namespace
             importXs.attrib['schemaLocation'] = location
             tempTree.getroot().append(importXs)
-    print(etree.tostring(tempTree, pretty_print=True))
+    print(etree.tostring(tempTree, pretty_print=True).decode('UTF-8'))
     templateSchema = etree.XMLSchema(tempTree)
     parser = etree.XMLParser(schema=templateSchema, attribute_defaults=True, remove_blank_text=True, resolve_entities=True)
     tree = etree.parse('./xml/StandardDocument.xml', parser)
-    print(etree.tostring(tree.getroot(), pretty_print=True))
+    print(etree.tostring(tree.getroot(), pretty_print=True).decode('UTF-8'))
     print('Testing element int64')
     int64 = tree.find('{http://github.com/HeroicKatora/PacketParsing}type')
     if int64 is None:
         print('Something went wrong')
     else:
-        print(etree.tostring(int64))
+        print(etree.tostring(int64).decode('UTF-8'))

@@ -33,33 +33,30 @@ class PacketLibrary(metaclass=ABCMeta):
         """
         pass
 
+XS = "{http://www.w3.org/2001/XMLSchema}"
 
-class XMLRegistry():
+
+class XMLRegistry:
     def __init__(self):
         self.XS = "{http://www.w3.org/2001/XMLSchema}"
         with open('./template.xml') as template:
-            self.tempTree = etree.parse(template)
-        self.parser = etree.ElementTree
-        self.validationList = list()
-        self.schemes = dict()
-        self.addLibrary(SchemeLibrary.Builtin)
-        self.namepsace_implementors = dict()
+            self.schemaTree = etree.parse(template)
+        self.parser = etree.XMLParser()
+        self.validation_list = list()
+        self.add_library(SchemeLibrary.Builtin)
+        self.namespace_implementors = dict()
 
     def add_schema_file(self, source_uri, implementing_module):
         parsed_schema = self.parser.parse(source_uri)
-        xml_schema = etree.XMLSchema(parsed_schema)
         namespace = parsed_schema.getroot().get('targetNamespace')
         import_xs = etree.Element(self.XS+'import')
         import_xs.attrib['namespace'] = namespace
         import_xs.attrib['schemaLocation'] = source_uri
-        self.namepsace_implementors[namespace] = implementing_module
-        self.tempTree.getroot().append(import_xs)
+        self.namespace_implementors[(namespace, source_uri)] = implementing_module
+        self.schemaTree.getroot().append(import_xs)
 
     def add_instance_file(self, source):
-        self.validationList.append(source)
-
-    def build_parser(self):
-        pass
+        self.validation_list.append(source)
 
     def add_library(self, library):
         """
@@ -79,3 +76,12 @@ class XMLRegistry():
                 return
         except Exception:
             raise KeyError('Can\'t construct a library from the argument')
+
+
+def build_parser(xml_registry: XMLRegistry):
+    full_schema = etree.XMLSchema(xml_registry.schemaTree)
+    parser = etree.XMLParser(schema=full_schema, attribute_defaults=True, remove_blank_text=True, resolve_entities=True)
+    for xml_file in xml_registry.validation_list:
+        parsed_tree = etree.parse(xml_file, parser)
+        pass
+    pass

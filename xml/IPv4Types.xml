@@ -6,7 +6,7 @@
 	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing https://raw.githubusercontent.com/HeroicKatora/PacketParsing/master/schemes/PacketSchema.xsd
 						http://github.com/HeroicKatora/PacketParsing/Standard https://github.com/HeroicKatora/PacketParsing/blob/master/schemes/PacketSchema.xsd">
 	
-	<gpp:import module="gpp.builtin">
+	<gpp:import module="gpp.standard">
 		<gpp:instantiator_import instance_name="ipVersion" name="IP_Version_Fictional"/>
 		<gpp:instantiator_import instance_name="ipTOS" name="IP_TOS"/>
 		<gpp:instantiator_import instance_name="ipID" name="IP_ID"/>
@@ -128,27 +128,33 @@
 		</displayhandle>
 	</type>
 
-	<packet name="IPv4">
-		<group pythonname="header">
-			<field pythonname="version" type="IP_Version">
+	<gpp:global_module name="IPv4_header">
+		<std:group>
+			<std:el pythonname="version"><std:field type="IP_Version">
 				<parsed value="4"><type_ref ref_name="integral"/></parsed>
-			</field>
-			<field pythonname="ip_header_length" displayname="IP Header Length"
-				type="IP_HL"/>
-			<field pythonname="type_of_service" displayname="Type of Service"
-				type="IP_TOS"/>
-			<field pythonname="total_length" displayname="Total Length" type="IP_Length"/>
-			<field pythonname="id" displayname="Identification" type="IP_ID"/>
-			<field pythonname="flags" displayname="Flags" type="IP_Flags"/>
-			<field pythonname="fragment_offset" displayname="Fragment Offset"
-				type="IP_Frag"/>
-			<field pythonname="ttl" displayname="Time to Live" type="IP_TTL"/>
-			<field pythonname="protocol" displayname="Protocol" type="IP_Protocol"/>
-			<field pythonname="checksum" displayname="Header Checksum" type="IP_Checksum"/>
-			<field pythonname="source" displayname="Source address" type="IP_Address"/>
-			<field pythonname="destination" displayname="Destination address"
-				type="IP_Address"/>
-		</group>
-	</packet>
+			</std:field></std:el>
+			<std:el pythonname="ip_header_length"><std:field displayname="IP Header Length"
+				type="IP_HL"/></std:el>
+			<std:el pythonname="type_of_service"><std:field displayname="Type of Service"
+				type="IP_TOS"/></std:el>
+			<std:el pythonname="total_length"><std:field displayname="Total Length" type="IP_Length"/></std:el>
+			<std:el pythonname="id"><std:field displayname="Identification" type="IP_ID"/></std:el>
+			<std:el pythonname="flags"><std:field displayname="Flags" type="IP_Flags"/></std:el>
+			<std:el pythonname="fragment_offset"><std:field displayname="Fragment Offset"
+				type="IP_Frag"/></std:el>
+			<std:el pythonname="ttl"><std:field  displayname="Time to Live" type="IP_TTL"/></std:el>
+			<std:el pythonname="protocol"><std:field displayname="Protocol" type="IP_Protocol"/></std:el>
+			<std:el pythonname="checksum"><std:field  displayname="Header Checksum" type="IP_Checksum"/></std:el>
+			<std:el pythonname="source"><std:field displayname="Source address" type="IP_Address"/></std:el>
+			<std:el pythonname="destination"><std:field displayname="Destination address"
+				type="IP_Address"/></std:el>
+		</std:group>
+	</gpp:global_module>
+
+	<gpp:global_module name="IPv4">
+		<std:sequence>
+			<gpp:module_ref ref="IPv4_header" pythonname="header"/>
+		</std:sequence>
+	</gpp:global_module>
 </gpp:pacparse>
 

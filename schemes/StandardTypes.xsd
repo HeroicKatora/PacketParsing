@@ -2,6 +2,7 @@
 <xs:schema xmlns="http://github.com/HeroicKatora/PacketParsing/Standard"
 	targetNamespace="http://github.com/HeroicKatora/PacketParsing/Standard"
 	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
+	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	elementFormDefault="qualified">
 	<xs:annotation><xs:documentation>This is part of the library ggp.xmlparsing.builtin</xs:documentation></xs:annotation>
@@ -70,38 +71,54 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="joint_module" substitutionGroup="gpp:module">
+	<xs:element name="field" substitutionGroup="gpp:module">
+		<xs:annotation><xs:documentation>A fixed length value</xs:documentation></xs:annotation>
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:module">
-					<xs:choice minOccurs="1" maxOccurs="unbounded">
-						<xs:element ref="gpp:field"/>
-						<xs:element ref="gpp:field_ref"/>
-						<xs:element ref="gpp:group"/>
-						<xs:element ref="gpp:group_ref"/>
-						<xs:element ref="gpp:module"/>
-						<xs:element ref="gpp:module_ref"/>
-					</xs:choice>
+					<xs:sequence>
+						<xs:annotation><xs:documentation>When a value occurs inside a field reading fails when the read value is unmatched by all of them.</xs:documentation></xs:annotation>
+						<xs:element ref="gpp:parsed" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+					<xs:attribute name="type" use="required" type="gpp:packet_parsing_identifier"/>
+					<xs:attribute name="displayname" use="optional" type="xs:string"/>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
-		<xs:unique name="unique_joint_module_pythonname">
-			<xs:selector xpath="gpp:field|gpp:field_ref|gpp:group|gpp:group_ref|gpp:module"/>
-			<xs:field xpath="@pythonname"></xs:field>
-		</xs:unique>
 	</xs:element>
-	
-	<xs:element name="first_match" substitutionGroup="gpp:module">
+
+	<xs:element name="group" substitutionGroup="gpp:module">
+		<xs:annotation><xs:documentation>A group is a fixed length aggregation of fields and other groups</xs:documentation></xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="gpp:module">
+					<xs:sequence>
+						<xs:element name="el" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:choice minOccurs="1" maxOccurs="unbounded">
+									<xs:element ref="field"/>
+									<xs:element ref="group"/>
+								</xs:choice>
+								<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="displayname" use="optional" type="xs:string"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:key name="group_unique_pythonname">
+			<xs:selector xpath="std:el"></xs:selector>
+			<xs:field xpath="@pythonname"></xs:field>
+		</xs:key>
+	</xs:element>
+
+	<xs:element name="sequence" substitutionGroup="gpp:module">
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:module">
 					<xs:choice minOccurs="1" maxOccurs="unbounded">
-						<xs:element ref="gpp:field"/>
-						<xs:element ref="gpp:field_ref"/>
-						<xs:element ref="gpp:group"/>
-						<xs:element ref="gpp:group_ref"/>
-						<xs:element ref="gpp:module"/>
-						<xs:element ref="gpp:module_ref"/>
+						<xs:group ref="gpp:module"/>
 					</xs:choice>
 				</xs:restriction>
 			</xs:complexContent>

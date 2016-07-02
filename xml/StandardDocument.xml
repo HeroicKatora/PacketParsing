@@ -4,14 +4,15 @@
 	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
 	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
 	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing https://raw.githubusercontent.com/HeroicKatora/PacketParsing/master/schemes/PacketSchema.xsd
-						http://github.com/HeroicKatora/PacketParsing/Standard https://github.com/HeroicKatora/PacketParsing/blob/master/schemes/PacketSchema.xsd">
+						http://github.com/HeroicKatora/PacketParsing/Standard https://github.com/HeroicKatora/PacketParsing/blob/master/schemes/PacketSchema.xsd"
+	document_name="StandardDocument">
 
 	<gpp:type name="int64">
 		<gpp:typehandle>
 			<std:integral subtype="64bit"/>
 		</gpp:typehandle>
 	</gpp:type>
-	
+
 	<gpp:type name="long">
 		<gpp:typehandle>
 			<gpp:type_ref ref_name="int64"/>
@@ -23,13 +24,13 @@
 			<std:integral subtype="int"/>
 		</gpp:typehandle>
 	</gpp:type>
-	
+
 	<gpp:type name="integer">
 		<gpp:typehandle>
 			<gpp:type_ref ref_name="int32"/>
 		</gpp:typehandle>
 	</gpp:type>
-	
+
 	<gpp:type name="int16">
 		<gpp:typehandle>
 			<std:integral subtype="short"/>
@@ -41,17 +42,16 @@
 			<std:integral subtype="byte"/>
 		</gpp:typehandle>
 	</gpp:type>
-	
+
 	<gpp:type name="char">
 		<gpp:typehandle>
 			<std:integral subtype="char" formatstring="{:c}"/>
 		</gpp:typehandle>
 	</gpp:type>
-	
+
 	<gpp:type name="short">
 		<gpp:typehandle>
 			<gpp:type_ref ref_name="int8"/>
 		</gpp:typehandle>
 	</gpp:type>
-	
 </gpp:pacparse>

@@ -1,24 +1,25 @@
 <?xml version="1.1" encoding="UTF-8"?>
-<gpp:pacparse xmlns="http://github.com/HeroicKatora/PacketParsing" 
+<gpp:pacparse xmlns="http://github.com/HeroicKatora/PacketParsing"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:gpp="http://github.com/HeroicKatora/PacketParsing"
 	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
 	xsi:schemaLocation="http://github.com/HeroicKatora/PacketParsing https://raw.githubusercontent.com/HeroicKatora/PacketParsing/master/schemes/PacketSchema.xsd
-						http://github.com/HeroicKatora/PacketParsing/Standard https://github.com/HeroicKatora/PacketParsing/blob/master/schemes/PacketSchema.xsd">
-	
-	<gpp:import module="gpp.standard">
+						http://github.com/HeroicKatora/PacketParsing/Standard https://github.com/HeroicKatora/PacketParsing/blob/master/schemes/PacketSchema.xsd"
+	document_name="IPv4Types">
+
+	<gpp:import module="gpp.builtin">
 		<gpp:instantiator_import instance_name="ipVersion" name="IP_Version_Fictional"/>
 		<gpp:instantiator_import instance_name="ipTOS" name="IP_TOS"/>
 		<gpp:instantiator_import instance_name="ipID" name="IP_ID"/>
 		<gpp:instantiator_import instance_name="ipChecksum" name="IP_Checksum"/>
 		<gpp:instantiator_import instance_name="ipAddressDisplay" name="IP_Address_Display"/>
 	</gpp:import>
-	
-	<gpp:include source_document="StandardDocument">
+
+	<gpp:include library_name="builtin" document_name="StandardDocument">
 		<gpp:type_include instance_name="integer" name="integral"/>
 		<gpp:type_include instance_name="char" name="char"/>
 	</gpp:include>
-	
+
 	<type name="IP_Version">
 		<iohandle>
 			<std:integral subtype="4bit"/>
@@ -59,19 +60,19 @@
 			<builtin implementor="IP_TOS"/>
 		</displayhandle>
 	</type>
-	
+
 	<type name="IP_Length">
 		<typehandle>
 			<std:integral subtype="uint16" formatstring="{:d} header quad bytes"/>
 		</typehandle>
 	</type>
-	
+
 	<type name="IP_ID">
 		<typehandle>
 			<std:integral subtype="uint16" formatstring="{:x}"/>
 		</typehandle>
 	</type>
-	
+
 	<type name="IP_Flags">
 		<iohandle>
 			<std:integral subtype="3bit"/>
@@ -80,19 +81,19 @@
 			<builtin implementor="IP_ID"/>
 		</displayhandle>
 	</type>
-	
+
 	<type name="IP_Frag">
 		<typehandle>
 			<std:integral subtype="13bit" formatstring="{:x}"/>
 		</typehandle>
 	</type>
-	
+
 	<type name="IP_TTL">
 		<typehandle>
 			<std:integral subtype="byte" formatstring="{:d}"/>
 		</typehandle>
 	</type>
-	
+
 	<type name="IP_Protocol">
 		<iohandle>
 			<std:integral subtype="byte"/>
@@ -109,7 +110,7 @@
 			</std:enumeration>
 		</displayhandle>
 	</type>
-	
+
 	<type name="IP_Checksum">
 		<iohandle>
 			<std:integral subtype="uint16"/>
@@ -118,7 +119,7 @@
 			<builtin implementor="IP_Checksum"/>
 		</displayhandle>
 	</type>
-	
+
 	<type name="IP_Address">
 		<iohandle>
 			<std:integral subtype="uint32"/>
@@ -157,4 +158,3 @@
 		</std:sequence>
 	</gpp:global_module>
 </gpp:pacparse>
-

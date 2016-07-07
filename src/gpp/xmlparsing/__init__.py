@@ -8,8 +8,6 @@ from enum import Enum
 from builtins import str, KeyError
 from lxml import etree
 
-from . import builtin
-
 
 class XMLRegistry:
     def __init__(self):
@@ -20,7 +18,6 @@ class XMLRegistry:
         self.validation_list = list()
         self.namespace_implementors = dict()
 
-        self.add_schema_file('schemes/PacketSchema.xsd', builtin)
         self.add_library(SchemeLibrary.Builtin)
 
     def add_schema_file(self, source_uri, implementing_module):
@@ -46,14 +43,20 @@ class XMLRegistry:
                 lib_collect = SchemeLibrary(library)
                 return self.add_library(lib_collect)
             elif library.__class__ is SchemeLibrary:
-                library = library.value
+                return self.add_library(library.value)
+            else:
                 for file, module in library.schemes():
                     self.add_schema_file(file, module)
                 for file in library.xml():
                     self.add_instance_file(file, library.identifier())
         except Exception as e:
-            raise KeyError('Can\'t construct a library from the argument')
+            raise KeyError('Can\'t construct a library from the argument', e)
+
+
+from .builtin import library as builtin_library
+from .standard import library as standard_library
 
 
 class SchemeLibrary(Enum):
-    Builtin = builtin.library
+    Builtin = builtin_library
+    Standard = standard_library

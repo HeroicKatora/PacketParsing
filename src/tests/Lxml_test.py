@@ -42,7 +42,7 @@ class UtilMethodTest(unittest.TestCase):
             self.tree = etree.parse(template)
 
     def test_tag_name(self):
-        from src.gpp.xmlparsing.builtin import tag_split
+        from src.gpp.xmlparsing.builder import tag_split
         el = self.tree.getroot()
         self.assertEqual(tag_split(el).basetag, 'schema')
 

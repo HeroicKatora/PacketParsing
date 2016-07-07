@@ -3,7 +3,12 @@ Created on 14.03.2016
 
 @author: andreas
 '''
-library = None
+from .interfaces import SimpleLibrary
+from . import standard as impl
+namespace_std = "http://github.com/HeroicKatora/PacketParsing/Standard"
+library = SimpleLibrary(namespace_std,
+                [('schemes/StandardTypes.xsd', __package__)],
+                ['xml/StandardDocument.xml'])
 
 
 def enumeration(xmlTree):
@@ -27,4 +32,8 @@ def join_module(xmlTree):
 
 
 def match_module(xmlTree):
+    pass
+
+
+def imported(xml_tree, document_builder):
     pass

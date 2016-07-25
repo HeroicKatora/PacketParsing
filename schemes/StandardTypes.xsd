@@ -8,21 +8,21 @@
 	<xs:annotation><xs:documentation>This is part of the library ggp.xmlparsing.builtin</xs:documentation></xs:annotation>
 	<xs:import namespace="http://github.com/HeroicKatora/PacketParsing"
 				schemaLocation="./PacketSchema.xsd"/>
-	
+
 	<xs:element name="outformat">
 		<xs:complexType>
 			<xs:attribute name="formatstring" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
-	
+
 	<xs:simpleType name="integer_oformat">
 		<xs:restriction base="xs:string">
 			<xs:pattern value=".*\{:((\+|-)?0?\d*(b|o|d|x|X)|0?\d*c)\}.*"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:element name="enum_fallback" type="gpp:display_handle_descriptor"/>
-	
+
 	<xs:element name="enumeration" substitutionGroup="gpp:display_basehandler">
 		<xs:complexType>
 			<xs:complexContent>
@@ -118,11 +118,11 @@
 			<xs:complexContent>
 				<xs:restriction base="gpp:module">
 					<xs:choice minOccurs="1" maxOccurs="unbounded">
-						<xs:group ref="gpp:module"/>
+						<xs:group ref="gpp:submodule"/>
 					</xs:choice>
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
-	
+
 </xs:schema>

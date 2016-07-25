@@ -12,7 +12,14 @@ library = SimpleLibrary(namespace_gpp,
         [])
 
 
-from .builder import parse_object
+from .builder import parse_object, tag_split
+from ..exec import types
+
+
+def builtin(xml, document_builder):
+    document = document_builder.document
+    name = xml.get('implementor')
+    return document.imported_objects[name]
 
 
 def import_(imp, document_builder):
@@ -49,10 +56,10 @@ def writer_ref(xml, document_builder):
     return object_dependency(xml, document_builder, 'writer')
 def display_ref(xml, document_builder):
     return object_dependency(xml, document_builder, 'display')
-def parser_ref(xml, document_builder):
-    return object_dependency(xml, document_builder, 'parser')
 def printer_ref(xml, document_builder):
     return object_dependency(xml, document_builder, 'printer')
+def parser_ref(xml, document_builder):
+    return object_dependency(xml, document_builder, 'parser')
 
 
 def object_dependency(xml, document_builder, typ):
@@ -67,6 +74,119 @@ def object_dependency(xml, document_builder, typ):
     return obj
 
 
-def type(xml, document):
-    print('type', xml.get('name'))
-    return xml.get('name')
+###############################################################################
+#                                                                             #
+#   Major type construction                                                   #
+#                                                                             #
+###############################################################################
+
+
+def type(xml, document_builder):
+    name = xml.get('name')
+    children = xml.getchildren()
+    first_name = tag_split(children[0]).basetag
+    if first_name == 'typehandle' or first_name == 'builtin':
+        assert(len(children) == 1)
+        typ = parse_object(children[0], document_builder)
+        return types.Type(name, typ, typ, typ, typ)
+    reader, writer = io_group(xml, document_builder)
+    parser, printer = display_group(xml, document_builder)
+    return types.Type(name, reader, writer, parser, printer)
+
+
+def io_operator(xml, document_builder):
+    #TODO implement
+    pass
+
+def display(xml, document_builder):
+    #TODO implement
+    pass
+
+def parser(xml, document_builder):
+    #TODO implement
+    pass
+
+def printer(xml, document_builder):
+    #TODO implement
+    pass
+
+def reader(xml, document_builder):
+    #TODO implement
+    pass
+
+def writer(xml, document_builder):
+    #TODO implement
+    pass
+
+
+def io_group(xml, document_builder):
+    iohandle = xml.find('iohandle')
+    if iohandle:
+        ioop = parse_object(iohandle, document_builder)
+        return ioop, ioop
+    readhandle = xml.find('readhandle')
+    writehandle = xml.find('writehandle')
+    reader = parse_object(readhandle, document_builder)
+    writer = parse_object(writehandle, document_builder)
+    return reader, writer
+
+
+def display_group(xml, document_builder):
+    displayhandle = xml.find('displayhandle')
+    if displayhandle:
+        display = parse_object(displayhandle, document_builder)
+        return display, display
+    parsehandle = xml.find('parsehandle')
+    printhandle = xml.find('printhandle')
+    parser = parse_object(parsehandle, document_builder)
+    printer = parse_object(printhandle, document_builder)
+    return parser, printer
+
+
+
+# Type handler construction
+
+
+def typehandle(xml, document_builder):
+    #TODO implement
+    pass
+
+def iohandle(xml, document_builder):
+    #TODO implement
+    pass
+
+def displayhandle(xml, document_builder):
+    #TODO implement
+    pass
+
+def readhandle(xml, document_builder):
+    #TODO implement
+    pass
+    #TODO implement
+
+def writehandle(xml, document_builder):
+    pass
+
+def printhandle(xml, document_builder):
+    #TODO implement
+    pass
+
+def parsehandle(xml, document_builder):
+    #TODO implement
+    pass
+
+
+###############################################################################
+#                                                                             #
+#   Module stuff                                                              #
+#                                                                             #
+###############################################################################
+
+
+def global_module(xml, document_builder):
+    #TODO implement
+    pass
+
+def module_ref(xml, document_builder):
+    #TODO implement
+    pass

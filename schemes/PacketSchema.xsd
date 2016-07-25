@@ -35,13 +35,13 @@
 
 	<xs:element name="builtin">
 		<xs:complexType>
-	    	<xs:annotation><xs:documentation>Marks something as builtin and not specified in the XML document. This can be used to implement custom behaviour.</xs:documentation></xs:annotation>
-	    	<xs:sequence><!-- Does not have any contents --></xs:sequence>
-	    	<xs:attribute name="implementor" type="packet_parsing_identifier" use="required">
-	    		<xs:annotation><xs:documentation>The type which implements this, it must be imported in the import segment.</xs:documentation></xs:annotation>
-	    	</xs:attribute>
-	    </xs:complexType>
-    </xs:element>
+			<xs:annotation><xs:documentation>Marks something as builtin and not specified in the XML document. This can be used to implement custom behaviour.</xs:documentation></xs:annotation>
+			<xs:sequence><!-- Does not have any contents --></xs:sequence>
+			<xs:attribute name="implementor" type="packet_parsing_identifier" use="required">
+				<xs:annotation><xs:documentation>The type which implements this, it must be imported in the import segment.</xs:documentation></xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
 
 	<xs:element name="direct_builtin">
 		<xs:complexType>
@@ -49,30 +49,30 @@
 		</xs:complexType>
 	</xs:element>
 
-    <xs:attributeGroup name="direct_builtin">
-   		<xs:annotation><xs:documentation>Import a builtin directly without naming it first</xs:documentation></xs:annotation>
-   		<xs:attribute name="module" type="python_module_path"/>
-   		<xs:attribute name="implementor" type="python_identifier"/>
-   	</xs:attributeGroup>
+	<xs:attributeGroup name="direct_builtin">
+		<xs:annotation><xs:documentation>Import a builtin directly without naming it first</xs:documentation></xs:annotation>
+		<xs:attribute name="module" type="python_module_path"/>
+		<xs:attribute name="implementor" type="python_identifier"/>
+	</xs:attributeGroup>
 
 	<xs:element name="pacparse">
-    <xs:complexType>
-    	<xs:sequence>
-    		<xs:element ref="import" minOccurs="0" maxOccurs="unbounded"/>
-    		<xs:element ref="include" minOccurs="0" maxOccurs="unbounded"/>
-  	 		<xs:choice minOccurs="0" maxOccurs="unbounded">
-    			<xs:element ref="io_operator"/>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="import" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="include" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="io_operator"/>
 					<xs:element ref="display"/>
-    			<xs:element ref="parser"/>
-    			<xs:element ref="printer"/>
-    			<xs:element ref="reader"/>
-    			<xs:element ref="writer"/>
-    			<xs:element ref="type"/>
-    			<xs:element ref="global_module"/>
-	  		</xs:choice>
-	  	</xs:sequence>
+					<xs:element ref="parser"/>
+					<xs:element ref="printer"/>
+					<xs:element ref="reader"/>
+					<xs:element ref="writer"/>
+					<xs:element ref="type"/>
+					<xs:element ref="global_module"/>
+				</xs:choice>
+			</xs:sequence>
 			<xs:attribute name="document_name" type="packet_parsing_identifier" use="required"/>
-	  </xs:complexType>
+		</xs:complexType>
 		<xs:key name="key_python_object_name">
 			<xs:selector xpath="gpp:import/gpp:instantiator_import"/>
 			<xs:field xpath="@name"/>
@@ -94,7 +94,7 @@
 			<xs:selector xpath="gpp:reader|gpp:include/gpp:reader_include"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
-	    <xs:key name="key_display_name">
+		<xs:key name="key_display_name">
 			<xs:selector xpath="gpp:display|gpp:include/gpp:display_include"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
@@ -124,57 +124,57 @@
 		</xs:key>
 
 		<xs:keyref name="ref_python_object_name" refer="key_python_object_name">
-	    	<xs:selector xpath=".//gpp:builtin"/>
-	    	<xs:field xpath="@implementor"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_type_name" refer="key_type_name">
-	    	<xs:selector xpath=".//gpp:type_ref"/>
-	    	<xs:field xpath="@ref_name"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_io_name" refer="key_io_name">
-	    	<xs:selector xpath=".//gpp:io_ref"/>
-	    	<xs:field xpath="@ref_name"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_reader_name" refer="key_reader_name">
-	    	<xs:selector xpath=".//gpp:reader_ref"/>
-	    	<xs:field xpath="@ref_name"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_writer_name" refer="key_writer_name">
-	    	<xs:selector xpath=".//gpp:writer_ref"/>
-	    	<xs:field xpath="@ref_name"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_display_name" refer="key_display_name">
-	    	<xs:selector xpath=".//gpp:display_ref"/>
-	    	<xs:field xpath="@ref_name"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_parser_name" refer="key_parser_name">
-	    	<xs:selector xpath=".//gpp:parser_ref"/>
-	    	<xs:field xpath="@ref_name"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_printer_name" refer="key_printer_name">
-	    	<xs:selector xpath=".//gpp:printer_ref"/>
-	    	<xs:field xpath="@ref_name"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_field_type" refer="key_type_name">
-	    	<xs:selector xpath=".//gpp:field"/>
-	    	<xs:field xpath="@type"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_global_field" refer="key_global_field_name">
-	    	<xs:selector xpath=".//gpp:field_ref"/>
-	    	<xs:field xpath="@ref"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_global_group" refer="key_global_group_name">
-	    	<xs:selector xpath=".//gpp:group_ref"/>
-	    	<xs:field xpath="@ref"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_global_module" refer="key_global_module_name">
-	    	<xs:selector xpath=".//gpp:module_ref"/>
-	    	<xs:field xpath="@ref"/>
-	    </xs:keyref>
-	    <xs:keyref name="ref_packet" refer="key_packet_name">
-	    	<xs:selector xpath=".//gpp:packet_ref"/>
-	    	<xs:field xpath="@ref"/>
-	    </xs:keyref>
+			<xs:selector xpath=".//gpp:builtin"/>
+			<xs:field xpath="@implementor"/>
+		</xs:keyref>
+		<xs:keyref name="ref_type_name" refer="key_type_name">
+			<xs:selector xpath=".//gpp:type_ref"/>
+			<xs:field xpath="@ref_name"/>
+		</xs:keyref>
+		<xs:keyref name="ref_io_name" refer="key_io_name">
+			<xs:selector xpath=".//gpp:io_ref"/>
+			<xs:field xpath="@ref_name"/>
+		</xs:keyref>
+		<xs:keyref name="ref_reader_name" refer="key_reader_name">
+			<xs:selector xpath=".//gpp:reader_ref"/>
+			<xs:field xpath="@ref_name"/>
+		</xs:keyref>
+		<xs:keyref name="ref_writer_name" refer="key_writer_name">
+			<xs:selector xpath=".//gpp:writer_ref"/>
+			<xs:field xpath="@ref_name"/>
+		</xs:keyref>
+		<xs:keyref name="ref_display_name" refer="key_display_name">
+			<xs:selector xpath=".//gpp:display_ref"/>
+			<xs:field xpath="@ref_name"/>
+		</xs:keyref>
+		<xs:keyref name="ref_parser_name" refer="key_parser_name">
+			<xs:selector xpath=".//gpp:parser_ref"/>
+			<xs:field xpath="@ref_name"/>
+		</xs:keyref>
+		<xs:keyref name="ref_printer_name" refer="key_printer_name">
+			<xs:selector xpath=".//gpp:printer_ref"/>
+			<xs:field xpath="@ref_name"/>
+		</xs:keyref>
+		<xs:keyref name="ref_field_type" refer="key_type_name">
+			<xs:selector xpath=".//gpp:field"/>
+			<xs:field xpath="@type"/>
+		</xs:keyref>
+		<xs:keyref name="ref_global_field" refer="key_global_field_name">
+			<xs:selector xpath=".//gpp:field_ref"/>
+			<xs:field xpath="@ref"/>
+		</xs:keyref>
+		<xs:keyref name="ref_global_group" refer="key_global_group_name">
+			<xs:selector xpath=".//gpp:group_ref"/>
+			<xs:field xpath="@ref"/>
+		</xs:keyref>
+		<xs:keyref name="ref_global_module" refer="key_global_module_name">
+			<xs:selector xpath=".//gpp:module_ref"/>
+			<xs:field xpath="@ref"/>
+		</xs:keyref>
+		<xs:keyref name="ref_packet" refer="key_packet_name">
+			<xs:selector xpath=".//gpp:packet_ref"/>
+			<xs:field xpath="@ref"/>
+		</xs:keyref>
 
 	</xs:element>
 
@@ -262,7 +262,7 @@
 			<xs:any minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:anyAttribute/>
-    </xs:complexType>
+	</xs:complexType>
 
 	<xs:element name="type_basehandler" type="handle" abstract="true"/>
 	<xs:element name="io_basehandler" type="handle" abstract="true"/>
@@ -272,162 +272,162 @@
 	<xs:element name="printer_basehandler" type="handle" abstract="true"/>
 	<xs:element name="parser_basehandler" type="handle" abstract="true"/>
 
-    <xs:complexType name="type_handle_descriptor">
-   		<xs:choice>
-   			<xs:element ref="builtin"/>
-   			<xs:element ref="type_ref"/>
-   			<xs:element ref="type_basehandler"/>
-   		</xs:choice>
-    </xs:complexType>
+	<xs:complexType name="type_handle_descriptor">
+		<xs:choice>
+			<xs:element ref="builtin"/>
+			<xs:element ref="type_ref"/>
+			<xs:element ref="type_basehandler"/>
+		</xs:choice>
+	</xs:complexType>
 
-    <xs:complexType name="io_handle_descriptor">
-   		<xs:choice>
-   			<xs:element ref="builtin"/>
-   			<xs:element ref="type_ref"/>
-   			<xs:element ref="type_basehandler"/>
-   			<xs:element ref="io_ref"/>
-   			<xs:element ref="io_basehandler"/>
-   		</xs:choice>
-    </xs:complexType>
+	<xs:complexType name="io_handle_descriptor">
+		<xs:choice>
+			<xs:element ref="builtin"/>
+			<xs:element ref="type_ref"/>
+			<xs:element ref="type_basehandler"/>
+			<xs:element ref="io_ref"/>
+			<xs:element ref="io_basehandler"/>
+		</xs:choice>
+	</xs:complexType>
 
-    <xs:complexType name="reader_handle_descriptor">
-   		<xs:choice>
-   			<xs:element ref="builtin"/>
-   			<xs:element ref="type_ref"/>
-   			<xs:element ref="type_basehandler"/>
-   			<xs:element ref="io_ref"/>
-   			<xs:element ref="io_basehandler"/>
-   			<xs:element ref="reader_ref"/>
-   			<xs:element ref="reader_basehandler"/>
-   		</xs:choice>
-    </xs:complexType>
+	<xs:complexType name="reader_handle_descriptor">
+		<xs:choice>
+			<xs:element ref="builtin"/>
+			<xs:element ref="type_ref"/>
+			<xs:element ref="type_basehandler"/>
+			<xs:element ref="io_ref"/>
+			<xs:element ref="io_basehandler"/>
+			<xs:element ref="reader_ref"/>
+			<xs:element ref="reader_basehandler"/>
+		</xs:choice>
+	</xs:complexType>
 
-    <xs:complexType name="writer_handle_descriptor">
-   		<xs:choice>
-   			<xs:element ref="builtin"/>
-   			<xs:element ref="type_ref"/>
-   			<xs:element ref="type_basehandler"/>
-   			<xs:element ref="io_ref"/>
-   			<xs:element ref="io_basehandler"/>
-   			<xs:element ref="writer_ref"/>
-   			<xs:element ref="writer_basehandler"/>
-   		</xs:choice>
-    </xs:complexType>
+	<xs:complexType name="writer_handle_descriptor">
+		<xs:choice>
+			<xs:element ref="builtin"/>
+			<xs:element ref="type_ref"/>
+			<xs:element ref="type_basehandler"/>
+			<xs:element ref="io_ref"/>
+			<xs:element ref="io_basehandler"/>
+			<xs:element ref="writer_ref"/>
+			<xs:element ref="writer_basehandler"/>
+		</xs:choice>
+	</xs:complexType>
 
 	<xs:complexType name="display_handle_descriptor">
-   		<xs:choice>
-   			<xs:element ref="builtin"/>
-   			<xs:element ref="type_ref"/>
-   			<xs:element ref="type_basehandler"/>
-   			<xs:element ref="display_ref"/>
-   			<xs:element ref="display_basehandler"/>
-   		</xs:choice>
-    </xs:complexType>
+		<xs:choice>
+			<xs:element ref="builtin"/>
+			<xs:element ref="type_ref"/>
+			<xs:element ref="type_basehandler"/>
+			<xs:element ref="display_ref"/>
+			<xs:element ref="display_basehandler"/>
+		</xs:choice>
+	</xs:complexType>
 
-    <xs:complexType name="printer_handle_descriptor">
-   		<xs:choice>
-   			<xs:element ref="builtin"/>
-   			<xs:element ref="type_ref"/>
-   			<xs:element ref="type_basehandler"/>
-   			<xs:element ref="display_ref"/>
-   			<xs:element ref="display_basehandler"/>
-   			<xs:element ref="printer_ref"/>
-   			<xs:element ref="printer_basehandler"/>
-   		</xs:choice>
-    </xs:complexType>
+	<xs:complexType name="printer_handle_descriptor">
+		<xs:choice>
+			<xs:element ref="builtin"/>
+			<xs:element ref="type_ref"/>
+			<xs:element ref="type_basehandler"/>
+			<xs:element ref="display_ref"/>
+			<xs:element ref="display_basehandler"/>
+			<xs:element ref="printer_ref"/>
+			<xs:element ref="printer_basehandler"/>
+		</xs:choice>
+	</xs:complexType>
 
-    <xs:complexType name="parser_handle_descriptor">
-   		<xs:choice>
-   			<xs:element ref="builtin"/>
-   			<xs:element ref="type_ref"/>
-   			<xs:element ref="type_basehandler"/>
-   			<xs:element ref="io_ref"/>
-   			<xs:element ref="io_basehandler"/>
-   			<xs:element ref="parser_ref"/>
-   			<xs:element ref="parser_basehandler"/>
-   		</xs:choice>
-    </xs:complexType>
+	<xs:complexType name="parser_handle_descriptor">
+		<xs:choice>
+			<xs:element ref="builtin"/>
+			<xs:element ref="type_ref"/>
+			<xs:element ref="type_basehandler"/>
+			<xs:element ref="io_ref"/>
+			<xs:element ref="io_basehandler"/>
+			<xs:element ref="parser_ref"/>
+			<xs:element ref="parser_basehandler"/>
+		</xs:choice>
+	</xs:complexType>
 
 	<xs:element name="type">
 		<xs:complexType>
-	   		<xs:annotation><xs:documentation>A type describes input/output and prints/parses data</xs:documentation></xs:annotation>
-	   		<xs:choice>
-	   			<xs:element ref="builtin"/>
-	   			<xs:element ref="typehandle"/>
-	   			<xs:sequence>
-	   				<xs:group ref="iogroup"/>
-	   				<xs:group ref="displaygroup"/>
-	   			</xs:sequence>
-	   		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
-	    </xs:complexType>
+			<xs:annotation><xs:documentation>A type describes input/output and prints/parses data</xs:documentation></xs:annotation>
+			<xs:choice>
+				<xs:element ref="builtin"/>
+				<xs:element ref="typehandle"/>
+				<xs:sequence>
+					<xs:group ref="iogroup"/>
+					<xs:group ref="displaygroup"/>
+				</xs:sequence>
+			</xs:choice>
+			<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
+		</xs:complexType>
 	</xs:element>
 
 	<xs:element name="display">
 		<xs:complexType>
-	    	<xs:annotation><xs:documentation>A display is a union of a parser and a printer</xs:documentation></xs:annotation>
-	    	<xs:choice>
-	   			<xs:element ref="builtin"/>
-   				<xs:group ref="displaygroup"/>
-	   		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
-	    </xs:complexType>
+			<xs:annotation><xs:documentation>A display is a union of a parser and a printer</xs:documentation></xs:annotation>
+			<xs:choice>
+				<xs:element ref="builtin"/>
+				<xs:group ref="displaygroup"/>
+			</xs:choice>
+			<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
+		</xs:complexType>
 	</xs:element>
 
-    <xs:element name="io_operator">
-	    <xs:complexType>
-	    	<xs:annotation><xs:documentation>An io_operator is a union of a reader and a writer</xs:documentation></xs:annotation>
-	    	<xs:choice>
-	    		<xs:element ref="builtin"/>
-	  			<xs:group ref="iogroup"/>
-	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
-	    </xs:complexType>
-    </xs:element>
-
-    <xs:element name="parser">
-	    <xs:complexType>
-	    	<xs:annotation><xs:documentation>A parser takes a human like input (such as json or enums) and creates data. This need not be the reverse of a printer</xs:documentation></xs:annotation>
-	    	<xs:choice>
-	    		<xs:element ref="builtin"/>
-	  			<xs:element ref="parsehandle"/>
-	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
-	   	</xs:complexType>
-   	</xs:element>
-
-   	<xs:element name="printer">
+	<xs:element name="io_operator">
 		<xs:complexType>
-	   		<xs:annotation><xs:documentation>A printer forms a human readable string from the data</xs:documentation></xs:annotation>
-	    	<xs:choice>
-	    		<xs:element ref="builtin"/>
-	  			<xs:element ref="printhandle"/>
-	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
-  		</xs:complexType>
-  	</xs:element>
+			<xs:annotation><xs:documentation>An io_operator is a union of a reader and a writer</xs:documentation></xs:annotation>
+			<xs:choice>
+				<xs:element ref="builtin"/>
+				<xs:group ref="iogroup"/>
+			</xs:choice>
+			<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
+		</xs:complexType>
+	</xs:element>
 
-  	<xs:element name="reader">
+	<xs:element name="parser">
 		<xs:complexType>
-		    <xs:annotation><xs:documentation>A reader creates data from a byte stream</xs:documentation></xs:annotation>
-		    <xs:choice>
-	    		<xs:element ref="builtin"/>
-	  			<xs:element ref="readhandle"/>
-	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
-   		</xs:complexType>
-   	</xs:element>
+			<xs:annotation><xs:documentation>A parser takes a human like input (such as json or enums) and creates data. This need not be the reverse of a printer</xs:documentation></xs:annotation>
+			<xs:choice>
+				<xs:element ref="builtin"/>
+				<xs:element ref="parsehandle"/>
+			</xs:choice>
+			<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
+		</xs:complexType>
+	</xs:element>
 
-   	<xs:element name="writer">
+	<xs:element name="printer">
 		<xs:complexType>
-    		<xs:annotation><xs:documentation>A writer writes to a byte stream from the data</xs:documentation></xs:annotation>
-    		<xs:choice>
-	    		<xs:element ref="builtin"/>
-	  			<xs:element ref="writehandle"/>
-	  		</xs:choice>
-	   		<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
-   		</xs:complexType>
-   	</xs:element>
+			<xs:annotation><xs:documentation>A printer forms a human readable string from the data</xs:documentation></xs:annotation>
+			<xs:choice>
+				<xs:element ref="builtin"/>
+				<xs:element ref="printhandle"/>
+			</xs:choice>
+			<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="reader">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>A reader creates data from a byte stream</xs:documentation></xs:annotation>
+			<xs:choice>
+				<xs:element ref="builtin"/>
+				<xs:element ref="readhandle"/>
+			</xs:choice>
+			<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="writer">
+		<xs:complexType>
+			<xs:annotation><xs:documentation>A writer writes to a byte stream from the data</xs:documentation></xs:annotation>
+			<xs:choice>
+				<xs:element ref="builtin"/>
+				<xs:element ref="writehandle"/>
+			</xs:choice>
+			<xs:attribute name="name" type="packet_parsing_identifier" use="required"/>
+		</xs:complexType>
+	</xs:element>
 
 	<xs:element name="typehandle" type="type_handle_descriptor"/>
 	<xs:element name="iohandle" type="io_handle_descriptor"/>
@@ -440,15 +440,15 @@
 	<xs:group name="iogroup">
 		<xs:annotation><xs:documentation>Groups the handlers of a type used for io</xs:documentation></xs:annotation>
 		<xs:choice>
-   			<xs:element ref="iohandle"/>
-   			<xs:sequence>
+			<xs:element ref="iohandle"/>
+			<xs:sequence>
 				<xs:element ref="readhandle"/>
 				<xs:element ref="writehandle"/>
 			</xs:sequence>
-   		</xs:choice>
+		</xs:choice>
 
 	</xs:group>
-    <xs:group name="displaygroup">
+	<xs:group name="displaygroup">
 		<xs:annotation><xs:documentation>Groups the handlers of a type used for display</xs:documentation></xs:annotation>
 		<xs:choice>
 			<xs:element ref="displayhandle"/>
@@ -457,7 +457,7 @@
 				<xs:element ref="parsehandle"/>
 			</xs:sequence>
 		</xs:choice>
-    </xs:group>
+	</xs:group>
 
 	<xs:element name="parsed">
 		<xs:complexType>
@@ -495,6 +495,7 @@
 	</xs:element>
 
 	<xs:element name="module_ref">
+		<xs:annotation><xs:documentation>References a module declared somewhere else</xs:documentation></xs:annotation>
 		<xs:complexType>
 			<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
 			<xs:attribute name="ref" use="required" type="gpp:packet_parsing_identifier"/>
@@ -502,6 +503,7 @@
 	</xs:element>
 
 	<xs:element name="module_imm">
+		<xs:annotation><xs:documentation>Use this to declare a module where it is used</xs:documentation></xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="gpp:module"></xs:element>
@@ -510,7 +512,8 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:group name="module">
+	<xs:group name="submodule">
+		<xs:annotation><xs:documentation>Groups immediate modules and module references together. Intended for use in custom modules with submodules</xs:documentation></xs:annotation>
 		<xs:choice>
 			<xs:element ref="module_imm"/>
 			<xs:element ref="module_ref"/>

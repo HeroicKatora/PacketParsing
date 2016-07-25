@@ -44,6 +44,7 @@ class PacketDocument:
     def __init__(self, xml_tree, namespaces):
         self.xml_tree = xml_tree
         self.namespace_implementors = namespaces
+        self.source_map = None #Filled in builder.py#parse_document_objects
         self.imported_objects = dict()
         self.all_objects = dict()
         self.type = dict()

@@ -1,7 +1,7 @@
 import importlib
 
 from collections import namedtuple
-from itertools import dropwhile
+from itertools import tee
 from re import match
 from lxml import etree
 
@@ -24,6 +24,11 @@ def tag_split(t):
     if len(groups) < 1:
         return None
     return TagInfo._make(groups)
+
+
+def gpp_key(xml):
+    basetag = tag_split(xml).basetag
+    return (basetag, xml.get('name'))
 
 
 Builder = namedtuple('Builder', 'xml_reg tbd progress done')
@@ -82,13 +87,15 @@ def resolve_load_document(builder, lib, doc):
 
 def parse_document_objects(doc_iter, document_builder):
     document = document_builder.document
-    by_name = document.source_map = {(tag_split(do).basetag, do.get('name')): do for do in doc_iter}
+    doc_iter, to_map = tee(doc_iter)
+    by_name = document.source_map = {(tag_split(do).basetag, do.get('name')): do for do in to_map}
     done = document.all_objects
-    for key, item in by_name.items():
-        if key not in done:
+    for item in doc_iter:
+        if item not in done.values():
             parse_object(item, document_builder)
     for (typ, name), obj in done.items():
-        getattr(document, typ)[name] = obj
+        if typ in gpp_object_types:
+            getattr(document, typ)[name] = obj
 
 
 def parse_object(item, document_builder):
@@ -99,19 +106,6 @@ def parse_object(item, document_builder):
     document = document_builder.document
     nodes = document.source_map
     done = document.all_objects
-    #parse all dependencies
-    dependencies = list()
-    for typ in gpp_object_types:
-        xpath = './/{' + namespace_gpp + '}' + typ + '_ref'
-        for dep in item.findall(xpath):
-            key = (typ, dep.get('ref_name'))
-            dependencies.append(key)
-    for key in dependencies:
-        typ, name = key
-        if key in done:
-            continue
-        dep = nodes[key]
-        parse_object(dep, document_builder)
 
     #delegate to implementor
     item_tag = tag_split(item)

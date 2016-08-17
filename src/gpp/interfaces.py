@@ -27,6 +27,12 @@ class PacketParseable(metaclass=ABCMeta):
     def parse(self, charstream):
         pass
 
+class PacketConstructable(metaclass=ABCMeta):
+    @abstractclassmethod
+    def empty(self, charstream):
+        pass
+
+
 class PacketIO(PacketReadable, PacketWriteable):
     pass
 
@@ -36,7 +42,7 @@ class PacketDisplay(PacketPrintable, PacketParseable):
 class PacketType(PacketIO, PacketDisplay):
     pass
 
-class PacketModule(metaclass=ABCMeta):
+class PacketModule(PacketConstructable, metaclass=ABCMeta):
     @abstractclassmethod
     def submodules():
         pass

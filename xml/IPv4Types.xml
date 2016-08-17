@@ -154,7 +154,7 @@
 
 	<gpp:global_module name="IPv4">
 		<std:sequence>
-			<gpp:module_ref ref="IPv4_header" pythonname="header"/>
+			<gpp:submodule pythonname="header"><gpp:module_ref ref_name="IPv4_header"/></gpp:submodule>
 		</std:sequence>
 	</gpp:global_module>
 </gpp:pacparse>

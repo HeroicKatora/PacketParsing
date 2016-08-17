@@ -479,7 +479,7 @@
 
 	<xs:element name="module" type="module" abstract="true">
 		<xs:unique name="module_unique_pythonname">
-			<xs:selector xpath="gpp:module_ref|gpp:module_imm"/>
+			<xs:selector xpath="gpp:submodule"/>
 			<xs:field xpath="@pythonname"/>
 		</xs:unique>
 	</xs:element>
@@ -497,26 +497,25 @@
 	<xs:element name="module_ref">
 		<xs:annotation><xs:documentation>References a module declared somewhere else</xs:documentation></xs:annotation>
 		<xs:complexType>
-			<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
-			<xs:attribute name="ref" use="required" type="gpp:packet_parsing_identifier"/>
+			<xs:attribute name="ref_name" use="required" type="gpp:packet_parsing_identifier"/>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="module_imm">
+	<xs:element name="submodule">
 		<xs:annotation><xs:documentation>Use this to declare a module where it is used</xs:documentation></xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="gpp:module"></xs:element>
+				<xs:group ref="gpp:modulegroup"></xs:group>
 			</xs:sequence>
 			<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:group name="submodule">
+	<xs:group name="modulegroup">
 		<xs:annotation><xs:documentation>Groups immediate modules and module references together. Intended for use in custom modules with submodules</xs:documentation></xs:annotation>
 		<xs:choice>
-			<xs:element ref="module_imm"/>
-			<xs:element ref="module_ref"/>
+			<xs:element ref="gpp:module"/>
+			<xs:element ref="gpp:module_ref"/>
 		</xs:choice>
 	</xs:group>
 

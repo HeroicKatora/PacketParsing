@@ -10,4 +10,4 @@ class BuildTest(unittest.TestCase):
     def test_build(self):
         self.registry.add_library(SchemeLibrary.Standard)
         parser = build_parser(self.registry)
-        print(parser.documents_map)
+        self.assertTrue(('http://github.com/HeroicKatora/PacketParsing/Standard', 'StandardDocument') in parser.documents_map.keys())

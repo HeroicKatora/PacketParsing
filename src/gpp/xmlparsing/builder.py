@@ -12,7 +12,8 @@ from .builtin import namespace_gpp
 from .standard import namespace_std
 
 
-gpp_object_types = ('type', 'io', 'reader', 'writer', 'display', 'parser', 'printer')
+gpp_object_types = ('type', 'io', 'reader', 'writer', 'display', 'parser',
+        'printer', 'global_module')
 
 
 TagInfo = namedtuple('TagInfo', 'namespace basetag')

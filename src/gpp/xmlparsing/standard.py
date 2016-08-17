@@ -7,7 +7,7 @@ from .interfaces import SimpleLibrary
 from . import standard as impl
 namespace_std = "http://github.com/HeroicKatora/PacketParsing/Standard"
 library = SimpleLibrary(namespace_std,
-                [('schemes/StandardTypes.xsd', __package__)],
+                [('schemes/StandardTypes.xsd', impl)],
                 ['xml/StandardDocument.xml'])
 
 
@@ -19,7 +19,7 @@ def display_integral(xmlTree):
     pass
 
 
-def integral(xmlTree):
+def integral(xml, document_builder):
     pass
 
 

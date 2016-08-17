@@ -2,4 +2,5 @@
 .pydevproject
 .settings
 .idea
+.tags*
 __pycache__

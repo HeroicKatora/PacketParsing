@@ -8,9 +8,6 @@ from lxml import etree
 from . import  XMLRegistry
 from .interfaces import PacketDocument, PacketParser
 
-from .builtin import namespace_gpp
-from .standard import namespace_std
-
 
 gpp_object_types = ('type', 'io', 'reader', 'writer', 'display', 'parser',
         'printer', 'global_module')

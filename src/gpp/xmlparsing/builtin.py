@@ -10,14 +10,14 @@ That is everything but the main document root tree, including imports and includ
 # Forward declare the library to avoid import problems
 from .interfaces import SimpleLibrary
 from . import builtin as impl
+from .builder import parse_object, tag_split
+from ..exec import types
+
+
 namespace_gpp = "http://github.com/HeroicKatora/PacketParsing"
 library = SimpleLibrary(namespace_gpp,
         [('schemes/PacketSchema.xsd', impl)],
         [])
-
-#Beginning of the implementation
-from .builder import parse_object, tag_split
-from ..exec import types
 
 
 def builtin(xml, document_builder):

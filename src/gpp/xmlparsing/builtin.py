@@ -8,15 +8,16 @@ That is everything but the main document root tree, including imports and includ
 '''
 
 # Forward declare the library to avoid import problems
-from .interfaces import SimpleLibrary
 from . import builtin as impl
+from .interfaces import SimpleLibrary
 from .builder import parse_object, tag_split
+from .xmlregistry import FileSource
 from ..exec import types
 
 
 namespace_gpp = "http://github.com/HeroicKatora/PacketParsing"
 library = SimpleLibrary(namespace_gpp,
-        [('schemes/PacketSchema.xsd', impl)],
+        [(FileSource('schemes/PacketSchema.xsd'), impl)],
         [])
 
 

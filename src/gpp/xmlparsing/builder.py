@@ -5,7 +5,7 @@ from itertools import tee
 from re import match
 from lxml import etree
 
-from . import  XMLRegistry
+from .xmlregistry import XMLRegistry, GppResolver, FileSource, StringSource
 from .interfaces import PacketDocument, PacketParser
 
 
@@ -29,14 +29,26 @@ def gpp_key(xml):
     return (basetag, xml.get('name'))
 
 
+def parsed_xml_source(xml_source, xml_registry):
+    parser = xml_registry.parser
+    if isinstance(xml_source, FileSource):
+        return etree.parse(xml_source.file, parser)
+    elif isinstance(xml_source, StringSource):
+        return etree.fromstring(xml_source.content, parser)
+    elif isinstance(xml_source, str):
+        return etree.fromstring(xml_source)
+    raise IOError('Unkown source type of instance file')
+
 Builder = namedtuple('Builder', 'xml_reg tbd progress done')
 def build_parser(xml_registry: XMLRegistry):
     full_schema = etree.XMLSchema(xml_registry.schema_tree)
     parser = etree.XMLParser(schema=full_schema, attribute_defaults=True, remove_blank_text=True, resolve_entities=True)
+    parser.resolvers.add(xml_registry.resolver)
+
     tbd, progress, done = dict(), dict(), dict()
     builder = Builder(xml_registry, tbd, progress, done)
-    for xml_file, library in xml_registry.validation_list:
-        parsed_tree = etree.parse(xml_file, parser)
+    for xml_source, library in xml_registry.validation_list:
+        parsed_tree = parsed_xml_source(xml_source, xml_registry)
         document_name = parsed_tree.getroot().get('document_name')
         tbd[(library, document_name)] = parsed_tree
     while tbd:

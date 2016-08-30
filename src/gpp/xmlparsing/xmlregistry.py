@@ -26,6 +26,12 @@ class GppResolver(etree.Resolver):
 
 
 FileSource = namedtuple('FileSource', 'file')
+def from_local_file(basefile, filepath):
+    script_dir = ospath.dirname(basefile)
+    abs_path = ospath.join(script_dir, filepath)
+    return FileSource(abs_path)
+
+
 StringSource = namedtuple('StringSource', 'content')
 class XMLRegistry:
     def __init__(self):

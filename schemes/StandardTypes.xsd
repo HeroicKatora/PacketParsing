@@ -5,13 +5,13 @@
 	xmlns:std="http://github.com/HeroicKatora/PacketParsing/Standard"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	elementFormDefault="qualified">
-	<xs:annotation><xs:documentation>This is part of the library ggp.xmlparsing.builtin</xs:documentation></xs:annotation>
+	<xs:annotation><xs:documentation>This is part of the library ggp.builtin</xs:documentation></xs:annotation>
 	<xs:import namespace="http://github.com/HeroicKatora/PacketParsing"
 				schemaLocation="./PacketSchema.xsd"/>
 
 	<xs:element name="outformat">
 		<xs:complexType>
-			<xs:attribute name="formatstring" type="xs:string"/>
+			<xs:attribute name="formatstring" type="integer_oformat"/>
 		</xs:complexType>
 	</xs:element>
 

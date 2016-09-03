@@ -6,8 +6,11 @@ import unittest
 class BuildTest(unittest.TestCase):
     def setUp(self):
         self.registry = XMLRegistry()
-
-    def test_build(self):
         self.registry.add_library('Standard')
-        parser = build_parser(self.registry)
-        self.assertTrue(('http://github.com/HeroicKatora/PacketParsing/Standard', 'StandardDocument') in parser.documents_map.keys())
+        self.parser = build_parser(self.registry)
+
+    def test_exists(self):
+        self.assertTrue(('http://github.com/HeroicKatora/PacketParsing/Standard', 'StandardDocument') in self.parser.documents_map.keys())
+
+    def test_parsed(self):
+        self.assertTrue(True)

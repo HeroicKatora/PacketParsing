@@ -3,15 +3,7 @@ Created on 14.03.2016
 
 @author: andreas
 '''
-from .interfaces import SimpleLibrary
-from .xmlregistry import FileSource
-from . import standard as impl
 namespace_std = "http://github.com/HeroicKatora/PacketParsing/Standard"
-StandardName = 'standard'
-library = SimpleLibrary(namespace_std,
-                [(FileSource('schemes/StandardTypes.xsd'), impl)],
-                [FileSource('xml/StandardDocument.xml')])
-
 
 def enumeration(xmlTree):
     pass

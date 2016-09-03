@@ -8,18 +8,11 @@ That is everything but the main document root tree, including imports and includ
 '''
 
 # Forward declare the library to avoid import problems
-from . import builtin as impl
-from .interfaces import SimpleLibrary
-from .builder import parse_object, tag_split
-from .xmlregistry import FileSource
+from ..xmlparsing.builder import parse_object, tag_split
 from ..exec import types
 
 
 namespace_gpp = "http://github.com/HeroicKatora/PacketParsing"
-library = SimpleLibrary(namespace_gpp,
-        [(FileSource('schemes/PacketSchema.xsd'), impl)],
-        [])
-
 
 def builtin(xml, document_builder):
     document = document_builder.document

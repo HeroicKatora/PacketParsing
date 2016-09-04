@@ -4,3 +4,4 @@
 .idea
 .tags*
 __pycache__
+venv

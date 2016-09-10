@@ -9,7 +9,7 @@ That is everything but the main document root tree, including imports and includ
 
 # Forward declare the library to avoid import problems
 from ..xmlparsing.builder import parse_object, tag_split
-from ..exec import types
+from .types import Type, Submodule
 
 
 namespace_gpp = "http://github.com/HeroicKatora/PacketParsing"
@@ -89,10 +89,10 @@ def type_impl(xml, document_builder):
     if first_name == 'typehandle':
         assert(len(children) == 1)
         typ = parse_object(children[0], document_builder)
-        return types.Type(name, typ, typ, typ, typ)
+        return Type(name, typ, typ, typ, typ)
     reader, writer = io_group(xml, document_builder)
     parser, printer = display_group(xml, document_builder)
-    return types.Type(name, reader, writer, parser, printer)
+    return Type(name, reader, writer, parser, printer)
 
 
 def io_operator(xml, document_builder):
@@ -232,4 +232,6 @@ def module_ref(xml, document_builder):
 
 
 def submodule(xml, document_builder):
-    pass
+    pythonname = xml.get('pythonname')
+    module = parse_object(xml.getchildren()[0])
+    return Submodule(pythonname, module)

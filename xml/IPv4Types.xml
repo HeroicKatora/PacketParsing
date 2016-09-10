@@ -130,31 +130,53 @@
 	</type>
 
 	<gpp:global_module name="IPv4_header">
-		<std:group>
-			<std:el pythonname="version"><std:field type="IP_Version">
-				<parsed value="4"><type_ref ref_name="integral"/></parsed>
-			</std:field></std:el>
-			<std:el pythonname="ip_header_length"><std:field displayname="IP Header Length"
-				type="IP_HL"/></std:el>
-			<std:el pythonname="type_of_service"><std:field displayname="Type of Service"
-				type="IP_TOS"/></std:el>
-			<std:el pythonname="total_length"><std:field displayname="Total Length" type="IP_Length"/></std:el>
-			<std:el pythonname="id"><std:field displayname="Identification" type="IP_ID"/></std:el>
-			<std:el pythonname="flags"><std:field displayname="Flags" type="IP_Flags"/></std:el>
-			<std:el pythonname="fragment_offset"><std:field displayname="Fragment Offset"
-				type="IP_Frag"/></std:el>
-			<std:el pythonname="ttl"><std:field  displayname="Time to Live" type="IP_TTL"/></std:el>
-			<std:el pythonname="protocol"><std:field displayname="Protocol" type="IP_Protocol"/></std:el>
-			<std:el pythonname="checksum"><std:field  displayname="Header Checksum" type="IP_Checksum"/></std:el>
-			<std:el pythonname="source"><std:field displayname="Source address" type="IP_Address"/></std:el>
-			<std:el pythonname="destination"><std:field displayname="Destination address"
-				type="IP_Address"/></std:el>
-		</std:group>
+		<std:sequence>
+			<gpp:submodule pythonname="version">
+				<std:field type="IP_Version">
+					<parsed value="4"><type_ref ref_name="integral"/></parsed>
+				</std:field>
+			</gpp:submodule>
+			<gpp:submodule pythonname="ip_header_length">
+				<std:field displayname="IP Header Length" type="IP_HL"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="type_of_service">
+				<std:field displayname="Type of Service" type="IP_TOS"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="total_length">
+				<std:field displayname="Total Length" type="IP_Length"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="id">
+				<std:field displayname="Identification" type="IP_ID"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="flags">
+				<std:field displayname="Flags" type="IP_Flags"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="fragment_offset">
+				<std:field displayname="Fragment Offset" type="IP_Frag"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="ttl">
+				<std:field  displayname="Time to Live" type="IP_TTL"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="protocol">
+				<std:field displayname="Protocol" type="IP_Protocol"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="checksum">
+				<std:field  displayname="Header Checksum" type="IP_Checksum"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="source">
+				<std:field displayname="Source address" type="IP_Address"/>
+			</gpp:submodule>
+			<gpp:submodule pythonname="destination">
+				<std:field displayname="Destination address" type="IP_Address"/>
+			</gpp:submodule>
+		</std:sequence>
 	</gpp:global_module>
 
 	<gpp:global_module name="IPv4">
 		<std:sequence>
-			<gpp:submodule pythonname="header"><gpp:module_ref ref_name="IPv4_header"/></gpp:submodule>
+			<gpp:submodule pythonname="header">
+				<gpp:module_ref ref_name="IPv4_header"/>
+			</gpp:submodule>
 		</std:sequence>
 	</gpp:global_module>
 </gpp:pacparse>

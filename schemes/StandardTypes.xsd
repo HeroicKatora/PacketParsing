@@ -46,7 +46,7 @@
 
 	<xs:simpleType name="integral_subtype">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="([0-9])*bit|char|byte|short|int|long|uint8|uint16|uint32"/>
+			<xs:pattern value="([0-9]*)bit|char|byte|short|int|long|uint8|uint16|uint32"/>
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -72,7 +72,7 @@
 	</xs:element>
 
 	<xs:element name="field" substitutionGroup="gpp:module">
-		<xs:annotation><xs:documentation>A fixed length value</xs:documentation></xs:annotation>
+		<xs:annotation><xs:documentation>Promotes a type to a module</xs:documentation></xs:annotation>
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="gpp:module">
@@ -87,32 +87,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="group" substitutionGroup="gpp:module">
-		<xs:annotation><xs:documentation>A group is a fixed length aggregation of fields and other groups</xs:documentation></xs:annotation>
-		<xs:complexType>
-			<xs:complexContent>
-				<xs:restriction base="gpp:module">
-					<xs:sequence>
-						<xs:element name="el" minOccurs="1" maxOccurs="unbounded">
-							<xs:complexType>
-								<xs:choice minOccurs="1" maxOccurs="unbounded">
-									<xs:element ref="field"/>
-									<xs:element ref="group"/>
-								</xs:choice>
-								<xs:attribute name="pythonname" use="required" type="gpp:python_identifier"/>
-							</xs:complexType>
-						</xs:element>
-					</xs:sequence>
-					<xs:attribute name="displayname" use="optional" type="xs:string"/>
-				</xs:restriction>
-			</xs:complexContent>
-		</xs:complexType>
-		<xs:key name="group_unique_pythonname">
-			<xs:selector xpath="std:el"></xs:selector>
-			<xs:field xpath="@pythonname"></xs:field>
-		</xs:key>
-	</xs:element>
-
 	<xs:element name="sequence" substitutionGroup="gpp:module">
 		<xs:complexType>
 			<xs:complexContent>
@@ -123,6 +97,10 @@
 				</xs:restriction>
 			</xs:complexContent>
 		</xs:complexType>
+		<xs:key name="sequence_unique_pythonname">
+			<xs:selector xpath="gpp:submodule"></xs:selector>
+			<xs:field xpath="@pythonname"></xs:field>
+		</xs:key>
 	</xs:element>
 
 </xs:schema>

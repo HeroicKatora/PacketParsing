@@ -6,43 +6,48 @@ Created on 03.07.2016
 from abc import ABCMeta, abstractclassmethod
 
 
-class PacketReadable(metaclass=ABCMeta):
+class PacketReader(metaclass=ABCMeta):
     @abstractclassmethod
     def read(self, bitstream):
         pass
 
-class PacketWriteable(metaclass=ABCMeta):
+class PacketWriter(metaclass=ABCMeta):
     @abstractclassmethod
-    def write(self, bitstream):
+    def write(self, bitstream, data):
         pass
 
-
-class PacketPrintable(metaclass=ABCMeta):
+class PacketPrinter(metaclass=ABCMeta):
     @abstractclassmethod
-    def print(self, charstream):
+    def print(self, data):
         pass
 
-class PacketParseable(metaclass=ABCMeta):
+class PacketParser(metaclass=ABCMeta):
     @abstractclassmethod
-    def parse(self, charstream):
+    def parse(self, string):
         pass
 
-class PacketConstructable(metaclass=ABCMeta):
+class PacketConstructer(metaclass=ABCMeta):
     @abstractclassmethod
-    def empty(self, charstream):
+    def empty(self):
         pass
 
-
-class PacketIO(PacketReadable, PacketWriteable):
+class PacketIO(PacketReader, PacketWriter):
     pass
 
-class PacketDisplay(PacketPrintable, PacketParseable):
+class PacketDisplay(PacketPrinter, PacketParser):
     pass
 
 class PacketType(PacketIO, PacketDisplay):
     pass
 
-class PacketModule(PacketConstructable, metaclass=ABCMeta):
+class PacketModule(PacketType):
+    pass
+
+
+class PacketData(metaclass=ABCMeta):
+    def __init__(self, type):
+        self.type = type
+
     @abstractclassmethod
     def submodules():
         pass

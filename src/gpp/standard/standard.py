@@ -6,7 +6,7 @@ Created on 14.03.2016
 from ..builtin.builtin import deviate_builtin
 from ..xmlparsing.builder import parse_object
 from .types import Enumeration, EnumValue
-from .types import DisplayIntegral, TypeIntegral
+from .types import IntegralDisplay, IntegralType
 
 
 namespace_std = "http://github.com/HeroicKatora/PacketParsing/Standard"
@@ -25,20 +25,23 @@ def enumvalue(xml, document_builder):
 
 
 def display_integral(xml, document_builder):
-    pass
+    formatstring = xml.get('formatstring') or '{:d}'
+    return IntegralDisplay(formatstring)
 
 
 def integral(xml, document_builder):
-    pass
+    formatstring = xml.get('formatstring') or '{:d}'
+    subtype = xml.get('subtype') or 'int'
+    return IntegralType(subtype, formatstring)
 
 
 def sequence(xml, document_builder):
-    pass
+    submodules = list(parse_object(mod) for mod in xml.findall('submodule'))
+    return Sequence(modules)
 
 
-def join_module(xmlTree):
-    pass
-
-
-def match_module(xmlTree):
-    pass
+def field(xml, document_builder):
+    typ = xml.get('type')
+    displayname = xml.get('displayname')
+    values = list(parse_object(val) for val in xml.findall('parsed')) or None
+    return Field(typ, displayname, values)

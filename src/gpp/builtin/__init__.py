@@ -3,6 +3,6 @@ from ..xmlparsing.interfaces import SimpleLibrary
 from ..xmlparsing.xmlregistry import FileSource, BuiltinName
 
 
-library = SimpleLibrary(impl.namespace_gpp,
+library = SimpleLibrary(BuiltinName,
         [(FileSource('schemes/PacketSchema.xsd'), impl)],
         [])

@@ -6,13 +6,13 @@ That is everything but the main document root tree, including imports and includ
 
 @author: andreas
 '''
-
-# Forward declare the library to avoid import problems
+import importlib
 from ..xmlparsing.builder import parse_object, tag_split
 from .types import Type, Submodule
 
 
 namespace_gpp = "http://github.com/HeroicKatora/PacketParsing"
+
 
 def builtin(xml, document_builder):
     document = document_builder.document
@@ -27,7 +27,7 @@ def import_(imp, document_builder):
     for instantiator_import in imp.findall('{%s}instantiator_import' % namespace_gpp):
         name = instantiator_import.get('name')
         instance_name = instantiator_import.get('instance_name')
-        obj = getattr(module_inst, 'instance_name')
+        obj = getattr(module_inst, instance_name)
         document.imported_objects[name] = obj
 
 

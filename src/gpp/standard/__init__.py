@@ -3,7 +3,7 @@ from ..xmlparsing.interfaces import SimpleLibrary
 from ..xmlparsing.xmlregistry import FileSource
 
 
-StandardName = 'standard'
-library = SimpleLibrary(impl.namespace_std,
+StandardName = 'gpp.standard'
+library = SimpleLibrary(StandardName,
                 [(FileSource('schemes/StandardTypes.xsd'), impl)],
                 [FileSource('xml/StandardDocument.xml')])

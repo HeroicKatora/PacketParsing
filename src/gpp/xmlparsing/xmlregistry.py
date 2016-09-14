@@ -99,7 +99,7 @@ class XMLRegistry:
             self.add_instance(file, library.identifier())
 
 SchemeLibrary = dict()
-BuiltinName = 'builtin'
+BuiltinName = 'gpp.builtin'
 def register_library(name: str, library: PacketLibrary):
     if not isinstance(name, str) or not isinstance(library, PacketLibrary):
         raise KeyError('Not a valid pair to register as a library')

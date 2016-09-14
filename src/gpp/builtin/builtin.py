@@ -7,11 +7,12 @@ That is everything but the main document root tree, including imports and includ
 @author: andreas
 '''
 import importlib
-from ..xmlparsing.builder import parse_object, tag_split
+from ..xmlparsing.builder import parse_object, tag_split, resolve_load_document
 from .types import Type, Submodule
 
 
 namespace_gpp = "http://github.com/HeroicKatora/PacketParsing"
+qualifier_gpp = '{'+namespace_gpp+'}'
 
 
 def builtin(xml, document_builder):
@@ -31,13 +32,13 @@ def import_(imp, document_builder):
         document.imported_objects[name] = obj
 
 
-def include(inc, document_builder):
-    document = document_builder.document
-    incl_lib = include.get('library_name')
-    incl_doc_name = include.get('document_name')
-    incl_document = resolve_load_document(builder, inc_lib, incl_doc_name)
-    for def_include in include.getchildren():
-        incl_type = tag_name(def_include)
+def include(included, document_builder):
+    document, builder = document_builder.document, document_builder.builder
+    incl_lib = included.get('library_name')
+    incl_doc_name = included.get('document_name')
+    incl_document = resolve_load_document(builder, incl_lib, incl_doc_name)
+    for def_include in included:
+        incl_type = tag_split(def_include).basetag.split('_')[0]
         incl_name = def_include.get('name')
         incl_instance_name = def_include.get('instance_name')
         incl_obj = getattr(incl_document, incl_type)[incl_instance_name]
@@ -164,24 +165,24 @@ def deviate_builtin(xml, document_builder, elsecall):
 
 
 def io_group(xml, document_builder):
-    iohandle_obj = xml.find('iohandle')
-    if iohandle_obj:
+    iohandle_obj = xml.find(qualifier_gpp+'iohandle')
+    if iohandle_obj is not None:
         ioop = parse_object(iohandle_obj, document_builder)
         return ioop, ioop
-    readhandle_obj = xml.find('readhandle')
-    writehandle_obj = xml.find('writehandle')
+    readhandle_obj = xml.find(qualifier_gpp+'readhandle')
+    writehandle_obj = xml.find(qualifier_gpp+'writehandle')
     reader = parse_object(readhandle_obj, document_builder)
     writer = parse_object(writehandle_obj, document_builder)
     return reader, writer
 
 
 def display_group(xml, document_builder):
-    displayhandle_obj = xml.find('displayhandle')
-    if displayhandle_obj:
+    displayhandle_obj = xml.find(qualifier_gpp+'displayhandle')
+    if displayhandle_obj is not None:
         display = parse_object(displayhandle_obj, document_builder)
         return display, display
-    parsehandle_obj = xml.find('parsehandle')
-    printhandle_obj = xml.find('printhandle')
+    parsehandle_obj = xml.find(qualifier_gpp+'parsehandle')
+    printhandle_obj = xml.find(qualifier_gpp+'printhandle')
     parser = parse_object(parsehandle_obj, document_builder)
     printer = parse_object(printhandle_obj, document_builder)
     return parser, printer

@@ -16,6 +16,18 @@ class Enumeration(PacketType):
         self.fallback = fallback
         self.valuelist = valuelist
 
+    def parse(self, string):
+        pass
+
+    def print(self, data):
+        pass
+
+    def read(self, bitstr):
+        pass
+
+    def write(self, bitstr, data):
+        pass
+
 
 class IntegralDisplay(PacketDisplay):
     def __init__(self, formatstring='{:d}'):

@@ -3,6 +3,7 @@ import importlib
 from collections import namedtuple
 from itertools import tee
 from re import match
+import re as regex
 from lxml import etree
 
 from .xmlregistry import XMLRegistry, GppResolver, FileSource, StringSource
@@ -15,13 +16,14 @@ gpp_object_types = ('type', 'io', 'reader', 'writer', 'display', 'parser',
 
 TagInfo = namedtuple('TagInfo', 'namespace basetag')
 def tag_split(t):
-    match_t = match('{(.*)}(.*)', t.tag)
-    if match_t is None:
-        return None
-    groups = match_t.groups()
-    if len(groups) < 1:
-        return None
-    return TagInfo._make(groups)
+    prefix = t.prefix
+    namesp = t.nsmap[prefix]
+    unqualified = t.tag
+    if namesp is None:
+        return TagInfo(namesp, unqualified)
+    assert(unqualified.startswith('{'+namesp+'}'))
+    unqualified = unqualified[2+len(namesp):]
+    return TagInfo(namesp, unqualified)
 
 
 def gpp_key(xml):

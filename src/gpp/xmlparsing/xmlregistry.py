@@ -1,6 +1,7 @@
 from builtins import str, KeyError
 from collections import namedtuple
 from lxml import etree
+from os import path as ospath
 
 from .interfaces import PacketLibrary
 
@@ -26,7 +27,7 @@ class GppResolver(etree.Resolver):
 
 
 FileSource = namedtuple('FileSource', 'file')
-def from_local_file(basefile, filepath):
+def local_file(basefile, filepath):
     script_dir = ospath.dirname(basefile)
     abs_path = ospath.join(script_dir, filepath)
     return FileSource(abs_path)

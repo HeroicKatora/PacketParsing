@@ -124,8 +124,10 @@ def parse_object(item, document_builder):
     item_ns = item_tag.namespace
     item_basetag = item_tag.basetag
     item_key = item_basetag, item.get('name')
-
-    parsed = parse_resolve_object(item, document_builder)
+    try:
+        parsed = parse_resolve_object(item, document_builder)
+    except Exception as ex:
+        raise Exception('in {}, line {}'.format(item_tag, item.sourceline)) from ex
     done[item_key] = parsed
 
     document_builder.parse_stack.pop()

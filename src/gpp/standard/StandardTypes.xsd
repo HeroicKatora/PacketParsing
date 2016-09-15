@@ -9,6 +9,16 @@
 	<xs:import namespace="http://github.com/HeroicKatora/PacketParsing"
 				schemaLocation="./PacketSchema.xsd"/>
 
+	<xs:element name="parsed">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="gpp:parser_handle_descriptor">
+					<xs:attribute name="value" type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
 	<xs:element name="outformat">
 		<xs:complexType>
 			<xs:attribute name="formatstring" type="integer_oformat"/>
@@ -33,7 +43,7 @@
 							<xs:complexType>
 								<xs:choice>
 									<xs:element ref="gpp:builtin"/>
-									<xs:element ref="gpp:parsed"/>
+									<xs:element ref="std:parsed"/>
 								</xs:choice>
 								<xs:attribute name="mnemonic" type="xs:string"/>
 							</xs:complexType>
@@ -78,7 +88,7 @@
 				<xs:restriction base="gpp:module">
 					<xs:sequence>
 						<xs:annotation><xs:documentation>When a value occurs inside a field reading fails when the read value is unmatched by all of them.</xs:documentation></xs:annotation>
-						<xs:element ref="gpp:parsed" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element ref="std:parsed" minOccurs="0" maxOccurs="unbounded"/>
 					</xs:sequence>
 					<xs:attribute name="type" use="required" type="gpp:packet_parsing_identifier"/>
 					<xs:attribute name="displayname" use="optional" type="xs:string"/>

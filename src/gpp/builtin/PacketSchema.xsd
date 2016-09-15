@@ -459,16 +459,6 @@
 		</xs:choice>
 	</xs:group>
 
-	<xs:element name="parsed">
-		<xs:complexType>
-			<xs:complexContent>
-				<xs:extension base="gpp:parser_handle_descriptor">
-					<xs:attribute name="value" type="xs:string"/>
-				</xs:extension>
-			</xs:complexContent>
-		</xs:complexType>
-	</xs:element>
-
 	<xs:complexType name="module">
 		<xs:annotation><xs:documentation>A module is like a field or group but with a dynamic length</xs:documentation></xs:annotation>
 		<xs:sequence>

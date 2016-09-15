@@ -30,14 +30,14 @@
 					<std:display_integral formatstring="{:x}"/>
 				</std:enum_fallback>
 				<std:enumvalue mnemonic="IP_v4">
-					<gpp:parsed value="0x04">
+					<std:parsed value="0x04">
 						<gpp:type_ref ref_name="integral"/>
-					</gpp:parsed>
+					</std:parsed>
 				</std:enumvalue>
 				<std:enumvalue mnemonic="IP_v6">
-					<gpp:parsed value="0x06">
+					<std:parsed value="0x06">
 						<gpp:type_ref ref_name="integral"/>
-					</gpp:parsed>
+					</std:parsed>
 				</std:enumvalue>
 				<std:enumvalue mnemonic="IP_vMaU">
 					<builtin implementor="IP_Version_Fictional"/>
@@ -104,7 +104,7 @@
 					<std:display_integral formatstring="{:x}"/>
 				</std:enum_fallback>
 				<std:enumvalue>
-					<gpp:parsed value="4"><type_ref ref_name="integral"/></gpp:parsed>
+					<std:parsed value="4"><type_ref ref_name="integral"/></std:parsed>
 				</std:enumvalue>
 				<!-- Implement the protocol values -->
 			</std:enumeration>

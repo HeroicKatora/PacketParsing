@@ -26,13 +26,13 @@ class Submodule(PacketType):
         self.module = module
 
     def read(self, *args, **kwargs):
-        return self.module.read(*args, **kwars)
+        return self.module.read(*args, **kwargs)
 
-    def write(self, *args, **kwars):
-        return self.module.write(*args, **kwars)
+    def write(self, *args, **kwargs):
+        return self.module.write(*args, **kwargs)
 
-    def parse(self, *args, **kwars):
-        return self.module.parse(*args, **kwars)
+    def parse(self, *args, **kwargs):
+        return self.module.parse(*args, **kwargs)
 
-    def print(self, *args, **kwars):
-        return self.module.print(*args, **kwars)
+    def print(self, *args, **kwargs):
+        return self.module.print(*args, **kwargs)

@@ -3,7 +3,8 @@ Created on 14.03.2016
 
 @author: andreas
 '''
-from ..builtin.builtin import deviate_builtin, qualifier_gpp, parsehandle
+from ..builtin.builtin import deviate_builtin, qualifier_gpp,\
+    parsehandle, parse_dependency
 from ..xmlparsing.builder import parse_object
 from .types import Enumeration, EnumValue
 from .types import IntegralDisplay, IntegralType
@@ -50,6 +51,7 @@ def sequence(xml, document_builder):
 
 def field(xml, document_builder):
     typ = xml.get('type')
+    typ = parse_dependency(('type', typ), document_builder)
     displayname = xml.get('displayname')
     values = list(parse_object(val, document_builder) for val in xml.findall(qualifier_gpp+'parsed')) or None
     return Field(typ, displayname, values)

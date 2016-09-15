@@ -65,6 +65,9 @@ def parser_ref(xml, document_builder):
 def object_dependency(xml, document_builder, typ):
     name = xml.get('ref_name')
     key = (typ, name)
+    return parse_dependency(key, document_builder)
+
+def parse_dependency(key, document_builder):
     document = document_builder.document
     obj = document.all_objects.get(key, None)
     if obj is not None:

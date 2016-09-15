@@ -10,23 +10,33 @@ from ..interfaces import PacketType, PacketDisplay, PacketModule
 EnumValue = namedtuple('EnumValue', 'mnemonic parsed')
 
 
-class Enumeration(PacketType):
+class InvalidMnemonicException(Exception):
+    pass
+class InvalidEnumValueException(Exception):
+    pass
+class Enumeration(PacketDisplay):
     def __init__(self, valuelist, fallback=None):
         PacketType.__init__(self)
         self.fallback = fallback
         self.valuelist = valuelist
+        self.mnemonic_map = {val.mnemonic: val.parsed for val in self.valuelist}
+        self.value_map = {val.parsed: val.mnemonic for val in self.valuelist}
 
     def parse(self, string):
-        pass
+        candidate = self.mnemonic_map.get(string, None)
+        if candidate is not None:
+            return candidate
+        if self.fallback is None:
+            raise InvalidMnemonicException(string)
+        return self.fallback.parse(string)
 
     def print(self, data):
-        pass
-
-    def read(self, bitstr):
-        pass
-
-    def write(self, bitstr, data):
-        pass
+        candidate = self.mnemonic_map.get(data, None)
+        if candidate is not None:
+            return candidate
+        if self.fallback is None:
+            raise InvalidEnumValueException(data)
+        return self.fallback.print(data)
 
 
 class IntegralDisplay(PacketDisplay):
@@ -81,7 +91,7 @@ class Field(PacketModule):
 
     def read(self, *args, **kwars):
         newval = self.type.read(*args, **kwars)
-        if newval not in self.values:
+        if self.values is not None and newval not in self.values:
             raise FieldValueException(newval)
         return newval
 
@@ -90,7 +100,7 @@ class Field(PacketModule):
 
     def parse(self, *args, **kwars):
         newval = self.type.parse(*args, **kwars)
-        if newval not in self.values:
+        if self.values is not None and newval not in self.values:
             raise FieldValueException(newval)
         return newval
 
@@ -106,7 +116,7 @@ class Sequence(PacketModule):
 
     def read(self, bitstream):
         with rollback(bitstream):
-            return {mod.name: mod.read(bistream) for mod in self.submodules}
+            return {mod.name: mod.read(bitstream) for mod in self.submodules}
 
     def write(self, bitstream, data):
         for mod in self.submodules:

@@ -15,7 +15,7 @@ qualifier_std = '{'+namespace_std+'}'
 
 def enumeration(xml, document_builder):
     fallback = xml.find(qualifier_std+'enum_fallback')
-    values = [deviate_builtin(xml_val, document_builder, enumvalue)
+    values = [deviate_builtin(xml_val, document_builder, parse_object)
             for xml_val in xml.findall(qualifier_std+'enumvalue')]
     return Enumeration(values, fallback)
 

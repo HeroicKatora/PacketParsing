@@ -62,3 +62,8 @@ class PacketParser:
     def __init__(self, xml_registry, documents_map):
         self.namespace_implementors = {l: d for l, d in xml_registry.namespace_implementors.items()}
         self.documents_map = documents_map
+
+class ParserBuildException(Exception):
+    def __init__(self, msg):
+        Exception.__init__(self, msg)
+        self.message = msg

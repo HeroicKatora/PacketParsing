@@ -7,7 +7,7 @@ import re as regex
 from lxml import etree
 
 from .xmlregistry import XMLRegistry, GppResolver, FileSource, StringSource
-from .interfaces import PacketDocument, PacketParser
+from .interfaces import PacketDocument, PacketParser, ParserBuildException
 
 
 gpp_object_types = ('type', 'io', 'reader', 'writer', 'display', 'parser',
@@ -126,8 +126,12 @@ def parse_object(item, document_builder):
     item_key = item_basetag, item.get('name')
     try:
         parsed = parse_resolve_object(item, document_builder)
+    except ParserBuildException as px:
+        info = '\nin {}, line {}'.format(item_tag, item.sourceline)
+        raise ParserBuildException(px.message+info) from px.__cause__
     except Exception as ex:
-        raise Exception('in {}, line {}'.format(item_tag, item.sourceline)) from ex
+        info = '\nin {}, line {}'.format(item_tag, item.sourceline)
+        raise ParserBuildException(str(ex)+info) from ex
     done[item_key] = parsed
 
     document_builder.parse_stack.pop()

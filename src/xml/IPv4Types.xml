@@ -7,7 +7,7 @@
 						http://github.com/HeroicKatora/PacketParsing/Standard https://github.com/HeroicKatora/PacketParsing/blob/master/schemes/PacketSchema.xsd"
 	document_name="IPv4Types">
 
-	<gpp:import module="gpp.builtin">
+	<gpp:import module="gpp.ip.v4">
 		<gpp:instantiator_import instance_name="ipVersion" name="IP_Version_Fictional"/>
 		<gpp:instantiator_import instance_name="ipTOS" name="IP_TOS"/>
 		<gpp:instantiator_import instance_name="ipID" name="IP_ID"/>
@@ -15,7 +15,7 @@
 		<gpp:instantiator_import instance_name="ipAddressDisplay" name="IP_Address_Display"/>
 	</gpp:import>
 
-	<gpp:include library_name="builtin" document_name="StandardDocument">
+	<gpp:include library_name="gpp.standard" document_name="StandardDocument">
 		<gpp:type_include instance_name="integer" name="integral"/>
 		<gpp:type_include instance_name="char" name="char"/>
 	</gpp:include>

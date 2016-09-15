@@ -43,7 +43,7 @@ class XMLRegistry:
         self.resolver = GppResolver()
         self.parser = etree.XMLParser()
         self.parser.resolvers.add(self.resolver)
-        with open('./template.xml') as template:
+        with open(local_file(__file__, './template.xml').file) as template:
             self.schema_tree = etree.parse(template, self.parser)
 
         self.add_library(SchemeLibrary[BuiltinName])

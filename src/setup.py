@@ -8,7 +8,7 @@ setuptools.setup(
     url='https://github.com/HeroicKatora/PacketParsing',
     author='HeroicKatora',
     license='MIT',
-    packages=setuptools.find_packages(where=os.path.dirname(__file__), exclude=['tests']),
+    packages=setuptools.find_packages(where=os.path.dirname(__file__), exclude=['tests', 'xml']),
     install_requires=['lxml', 'bitstring', 'parse'],
     package_data={'gpp': ['*.xml', '*.xsd']}
 )

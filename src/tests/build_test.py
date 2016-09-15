@@ -1,6 +1,6 @@
-from src.gpp import XMLRegistry, build_parser
-from src.gpp.xmlparsing import SchemeLibrary
-from src.gpp.standard import StandardName
+from gpp import XMLRegistry, build_parser
+from gpp.xmlparsing import SchemeLibrary, FileSource, local_file
+from gpp.standard import StandardName
 import unittest
 
 
@@ -14,4 +14,5 @@ class BuildTest(unittest.TestCase):
         self.assertTrue((StandardName, 'StandardDocument') in self.parser.documents_map.keys())
 
     def test_parsed(self):
-        self.assertTrue(True)
+        self.registry.add_instance(local_file(__file__, '../xml/IPv4Types.xml'))
+        build_parser(self.registry)

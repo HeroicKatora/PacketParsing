@@ -7,6 +7,7 @@ from ..builtin.builtin import deviate_builtin, qualifier_gpp, parsehandle
 from ..xmlparsing.builder import parse_object
 from .types import Enumeration, EnumValue
 from .types import IntegralDisplay, IntegralType
+from .types import Field, Sequence
 
 
 namespace_std = "http://github.com/HeroicKatora/PacketParsing/Standard"
@@ -44,7 +45,7 @@ def integral(xml, document_builder):
 
 def sequence(xml, document_builder):
     submodules = list(parse_object(mod, document_builder) for mod in xml.findall(qualifier_gpp+'submodule'))
-    return Sequence(modules)
+    return Sequence(submodules)
 
 
 def field(xml, document_builder):

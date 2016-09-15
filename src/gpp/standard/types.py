@@ -71,20 +71,28 @@ def integralLength(typeid):
     le = match('([0-9]*)bit', typeid)
     return int(le.groups()[0])
 
-
+class FieldValueException(Exception):
+    pass
 class Field(PacketModule):
-    def __init__(self, type, displayname):
+    def __init__(self, type, displayname, values):
         self.type = type
         self.displayname = displayname
+        self.values = values
 
     def read(self, *args, **kwars):
-        return self.type.read(*args, **kwars)
+        newval = self.type.read(*args, **kwars)
+        if newval not in self.values:
+            raise FieldValueException(newval)
+        return newval
 
     def write(self, *args, **kwars):
         return self.type.write(*args, **kwars)
 
     def parse(self, *args, **kwars):
-        return self.type.parse(*args, **kwars)
+        newval = self.type.parse(*args, **kwars)
+        if newval not in self.values:
+            raise FieldValueException(newval)
+        return newval
 
     def print(self, *args, **kwars):
         return self.type.print(*args, **kwars)

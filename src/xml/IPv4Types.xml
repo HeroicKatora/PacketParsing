@@ -133,7 +133,7 @@
 		<std:sequence>
 			<gpp:submodule pythonname="version">
 				<std:field type="IP_Version">
-					<parsed value="4"><type_ref ref_name="integral"/></parsed>
+					<std:parsed value="4"><type_ref ref_name="integral"/></std:parsed>
 				</std:field>
 			</gpp:submodule>
 			<gpp:submodule pythonname="ip_header_length">

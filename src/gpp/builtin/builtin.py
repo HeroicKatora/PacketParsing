@@ -43,6 +43,7 @@ def include(included, document_builder):
         incl_instance_name = def_include.get('instance_name')
         incl_obj = getattr(incl_document, incl_type)[incl_instance_name]
         getattr(document, incl_type)[incl_name] = incl_obj
+        document.all_objects[(incl_type, incl_name)] = incl_obj
 
 
 def type_ref(xml, document_builder):
@@ -218,7 +219,7 @@ parsehandle = handle_build
 
 
 def global_module(xml, document_builder):
-    return deviate_bulttin(xml, document_builder, global_module_impl)
+    return deviate_builtin(xml, document_builder, global_module_impl)
 
 def global_module_impl(xml, document_builder):
     xml_module = xml.getchildren()[0]
@@ -234,5 +235,5 @@ def module_ref(xml, document_builder):
 
 def submodule(xml, document_builder):
     pythonname = xml.get('pythonname')
-    module = parse_object(xml.getchildren()[0])
+    module = parse_object(xml.getchildren()[0], document_builder)
     return Submodule(pythonname, module)
